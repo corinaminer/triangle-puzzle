@@ -1,5 +1,5 @@
 # Triangle puzzle
-This repository contains the infrastructure I've assembled to document solutions to my triangle puzzle. The idea of the puzzle is to fit the 12 pieces into a given frame. I've called it the triangle puzzle because each piece can be constructed out of 6 equilateral triangles. The individual pieces, and a picture of one example solution, can be found in the `assets/` folder.
+This repository contains the infrastructure I've assembled to document solutions to my triangle puzzle. The idea of the puzzle is to fit the 12 pieces into a given frame. I've called it the triangle puzzle because each piece can be constructed out of 6 equilateral triangles. The individual pieces, and a picture of one example solution, can be found in the `assets/` folder. **More solutions are coming!** I have not yet entered all the solutions I have documented in less flexible formats.
 
 I've had this puzzle for most of my life, and started informally documenting solutions around 2002. I have never spontaneously arrived at a solution I had already found and documented, so I've gotten more and more curious how many solutions actually exist.
 

@@ -14,6 +14,9 @@ class Filewriter:
         try:
             with open("solutions.csv", "r") as f:
                 for line in f:
+                    # skip header row
+                    if line[:2] == "ID":
+                        continue
                     try:
                         solution = self.parseLine(line.strip())
                         self.addToSolutionDict(solution)

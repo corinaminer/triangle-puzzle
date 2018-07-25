@@ -1,3 +1,4 @@
+from Triangle import Triangle
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 

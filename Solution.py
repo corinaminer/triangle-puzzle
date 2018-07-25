@@ -1,3 +1,5 @@
+ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11]
+
 class Solution:
     
     def __init__(self, solution, id, subId, discoverer, date=None):
@@ -29,7 +31,7 @@ class Solution:
     def getReflectionStr(self):
         baseStr = self.getHexStr()
         s = ""
-        for rowWidth in Board.ROW_WIDTHS:
+        for rowWidth in ROW_WIDTHS:
             s += baseStr[0:rowWidth][::-1]
             baseStr = baseStr[rowWidth:]
         return s

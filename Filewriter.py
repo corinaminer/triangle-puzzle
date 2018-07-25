@@ -1,3 +1,4 @@
+from Solution import Solution
 from datetime import date
 
 # Throws error if date isn't in YYYY-MM-DD format

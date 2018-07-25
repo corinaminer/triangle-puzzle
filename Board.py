@@ -11,21 +11,21 @@ COLOR_DICT['o2']= (1,.6,.2)
 COLOR_DICT['y2']= (.9,1,.3)
 TILE_COLORS = ['r', 'g', 'b', 'w', 'o', 'y', 'r2', 'g2', 'b2', 'w2', 'o2', 'y2']
 
+ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11]
+COL_STARTS = [7 - rw//2 - 1 for rw in ROW_WIDTHS]
+COL_ENDS = [7 + rw//2 - 1 for rw in ROW_WIDTHS] # inclusive
+
 class Board:
-    
-    ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11]
-    COL_STARTS = [7 - rw//2 - 1 for rw in ROW_WIDTHS]
-    COL_ENDS = [7 + rw//2 - 1 for rw in ROW_WIDTHS] # inclusive
     
     def __init__(self):
         self.ax = self.blank_board()
         self.triangles = []
         
         row = 0
-        for row in range(len(Board.ROW_WIDTHS)):
-            rowTriangles = [None]*Board.COL_STARTS[row]
-            startCol = Board.COL_STARTS[row]
-            for col in range(startCol, startCol+Board.ROW_WIDTHS[row]):
+        for row in range(len(ROW_WIDTHS)):
+            rowTriangles = [None]*COL_STARTS[row]
+            startCol = COL_STARTS[row]
+            for col in range(startCol, startCol+ROW_WIDTHS[row]):
                 rowTriangles.append(Triangle(row, col, (row+col)%2!=0))
             row += 1
             self.triangles.append(rowTriangles)
@@ -35,7 +35,7 @@ class Board:
     # No i will keep this public function that is like that, which is just a shell around
     # the private function that does it in the distance-from-y way.
     def addTriangle(self, row, col, color=(222./255,184./255,135./255)):
-        self._addTriangle(row, col + Board.COL_STARTS[row], color)
+        self._addTriangle(row, col + COL_STARTS[row], color)
     
     # So this is the private function and col is just distance from y axis.
     def _addTriangle(self, row, col, color):
@@ -46,11 +46,11 @@ class Board:
         self.ax.add_patch(Polygon(pts,closed=True,color=color))
 
         # Draw edges if triangle borders on existing triangles that don't belong to same piece
-        if col > Board.COL_STARTS[row]:
+        if col > COL_STARTS[row]:
             leftNeighbor = self.triangles[row][col-1]
             if leftNeighbor.tileId != None and leftNeighbor.tileId != t.tileId:
                 self.ax.plot(pts[0], pts[2], 'k-', lw=2)
-        if col < Board.COL_ENDS[row]:
+        if col < COL_ENDS[row]:
             rightNeighbor = self.triangles[row][col+1]
             if rightNeighbor.tileId != None and rightNeighbor.tileId != t.tileId:
                 self.ax.plot(pts[1], pts[2], 'k-', lw=2)
@@ -70,7 +70,7 @@ class Board:
     
     def drawBoard(self, solution):
         for row in range(8):
-            for col in range(Board.ROW_WIDTHS[row]):
+            for col in range(ROW_WIDTHS[row]):
                 self.addTriangle(row, col, COLOR_DICT[TILE_COLORS[solution[0]]])
                 solution = solution[1:]
     

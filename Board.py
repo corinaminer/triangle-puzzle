@@ -58,6 +58,12 @@ class Board:
             return self.triangles[row+1][col]
         return self.triangles[row-1][col]
     
+    def drawBoard(self, solution):
+        for row in range(8):
+            for col in range(Board.ROW_WIDTHS[row]):
+                self.addTriangle(row, col, COLOR_DICT[TILE_COLORS[solution[0]]])
+                solution = solution[1:]
+    
     def blank_board(self):
         '''
         makes a super dank blank board and returns an axes object
@@ -88,7 +94,6 @@ class Board:
         for i in range(9):
             ax.plot([0,14],[2*i,2*i],'k-',lw=2,zorder=0)
 
-        [[6,16],[0,4]],[[8,16],[1,2]],[[9,14],[2,0]],[[10,12],[4,0]]
         for i in range(6):
             ax.plot([2*i,8+i],[0,16-(2*i)],'k-',lw=2,zorder=0)
             ax.plot([14-(2*i),6-i],[0,16-(2*i)],'k-',lw=2,zorder=0)

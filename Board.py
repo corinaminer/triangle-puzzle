@@ -1,6 +1,15 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
+COLOR_DICT = {'r':(1,0,0), 'g':(0,1,0), 'b':(0,0,1), 'w':(1,1,1), 'o':(1,0.5,0), 'y':(1,1,0),'tie':(160./255,32./255,40./255)}
+COLOR_DICT['r2']= (1,.2,.2)
+COLOR_DICT['g2']= (.2,.9,.2)
+COLOR_DICT['b2']= (.2,.2,1)
+COLOR_DICT['w2']= (.9,.9,.9)
+COLOR_DICT['o2']= (1,.6,.2)
+COLOR_DICT['y2']= (.9,1,.3)
+TILE_COLORS = ['r', 'g', 'b', 'w', 'o', 'y', 'r2', 'g2', 'b2', 'w2', 'o2', 'y2']
+
 class Board:
     
     ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11]

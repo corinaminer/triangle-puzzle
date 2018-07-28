@@ -11,6 +11,7 @@ class Filewriter:
     def __init__(self):
         self.solDict = {}
         self.subIdMaxes = []
+        self.discoverers = []
         try:
             with open("solutions.csv", "r") as f:
                 for line in f:
@@ -21,6 +22,7 @@ class Filewriter:
                         solution = self.parseLine(line.strip())
                         self.addToSolutionDict(solution)
                         self.recordIdAndSubId(solution)
+                        self.discoverers.append(solution.discoverer)
                     except Exception as e:
                         print("Unable to interpret line:\n\t" + line)
                         print(e)

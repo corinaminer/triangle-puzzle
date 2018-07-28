@@ -9,7 +9,7 @@ Many solutions have sister solutions reachable by flipping or rotating two or th
 If you are interested in finding all solutions to this puzzle computationally, feel free to use the resources from this repository. You may also find [solvin-da-puzzle](https://github.com/BenEgeIzmirli/solvin-da-puzzle) useful; it is a theoretically complete project to compute all solutions to this puzzle, but is too inefficient to produce any in practice. I am interested to know how many solutions exist (contact me for starting ideas if you decide to take this on!), but please do not use this repo as your workspace and please do not flood `solutions.csv` with computer-generated solutions -- I'd like to slowly fill that thing out with my own blood, sweat, and tears.
 
 ## ...manual approaches?
-If (heaven forbid) you find yourself compelled to solve this puzzle manually without the physical thing at your fingertips, feel free to add your solutions to `solutions.csv`. I just hope your name doesn't contain commas.
+If (heaven forbid) you find yourself compelled to solve this puzzle manually without the physical thing at your fingertips, feel free to add your solutions. If you're interested in getting the physical thing at your fingertips, contact me; I have a vague interest in making or ordering 3D printed copies of this puzzle, but have no motivation to do so. You could receive the first prototype!
 
 ## How solutions are encoded
 The key to the encoding of this puzzle is that the frame can be broken down into 72 triangles:

@@ -20,6 +20,26 @@ Solutions are recorded as 72-character strings. Each character corresponds to 1 
 
 ![piece key](https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/pieces.png)
 
+Example solution and corresponding encoding:
+
+<table>
+  <tr>
+    <td>
+      <img src="https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/example_solution.png"/>
+    </td>
+    <td>
+      <pre>      111
+     91133
+    99b1333
+   99bbb3888
+  69222bb0088
+ 667722200008a
+ 6677444555aaa
+  677444555aa</pre>
+    </td>
+  </tr>
+</table>
+
 ### Adding a solution with Python
 While it is possible to enter a solution directly into `solutions.csv`, I would strongly prefer that solutions be entered with Python to avoid typos and invalid entries.
 

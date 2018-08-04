@@ -1,6 +1,8 @@
 from Solution import Solution
 from datetime import date
 
+SOLUTION_FILENAME = "solutions.csv"
+
 # Throws error if date isn't in YYYY-MM-DD format
 def parseDate(dateStr):
     dateParts = [int(n) for n in dateStr.split('-')]
@@ -13,7 +15,7 @@ class Filewriter:
         self.subIdMaxes = []
         self.discoverers = []
         try:
-            with open("solutions.csv", "r") as f:
+            with open(SOLUTION_FILENAME, "r") as f:
                 for line in f:
                     # skip header row
                     if line[:2] == "ID":
@@ -28,8 +30,8 @@ class Filewriter:
                         print(e)
         except IOError:
             # File doesn't exist
-            with open("solutions.csv", "w"):
-                print("Created new file solutions.csv")
+            with open(SOLUTION_FILENAME, "w"):
+                print("Created new file " + SOLUTION_FILENAME)
     
     def recordIdAndSubId(self, solution):
         while len(self.subIdMaxes) < solution.id:
@@ -78,7 +80,7 @@ class Filewriter:
         print(solution)
         self.addToSolutionDict(solution)
         self.recordIdAndSubId(solution)
-        with open("solutions.csv", "a") as f:
+        with open(SOLUTION_FILENAME, "a") as f:
             f.write('\n' + solution.lineForFile())
 
     def addToSolutionDict(self, solution):

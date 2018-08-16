@@ -120,12 +120,12 @@ class Board:
         ax.add_patch(br)
 
         # This section draws lines to highlight the triangle grid
-        for i in range(9):
-            ax.plot([0,14],[2*i,2*i],'k-',lw=2,zorder=0)
+#        for i in range(9):
+#            ax.plot([0,14],[2*i,2*i],'k-',lw=2,zorder=0)
 
-        for i in range(6):
-            ax.plot([2*i,8+i],[0,16-(2*i)],'k-',lw=2,zorder=0)
-            ax.plot([14-(2*i),6-i],[0,16-(2*i)],'k-',lw=2,zorder=0)
+#        for i in range(6):
+#            ax.plot([2*i,8+i],[0,16-(2*i)],'k-',lw=2,zorder=0)
+#            ax.plot([14-(2*i),6-i],[0,16-(2*i)],'k-',lw=2,zorder=0)
 
         # Draw borders of board
         ax.plot([6,8],[16,16],'k-',lw=2,zorder=2)

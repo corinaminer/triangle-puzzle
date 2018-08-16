@@ -28,14 +28,14 @@ Example solution and corresponding encoding:
       <img src="https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/example_solution.png"/>
     </td>
     <td>
-      <pre>      111
-     91133
-    99b1333
-   99bbb3888
-  69222bb0088
- 667722200008a
- 6677444555aaa
-  677444555aa</pre>
+      <pre>      77b
+     977bb
+    9977bbb
+   993311100
+  49333110000
+ 4444232155588
+ 6642222a55588
+  6666aaaaa88</pre>
     </td>
   </tr>
 </table>

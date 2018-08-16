@@ -119,10 +119,6 @@ class Board:
         ax.add_patch(bl)
         ax.add_patch(br)
 
-        # Draw horizontal lines from below, but just the top and bottom ones
-        ax.plot([6,8],[16,16],'k-',lw=2,zorder=2)
-        ax.plot([2,12],[0,0],'k-',lw=2,zorder=2)
-
         # This section draws lines to highlight the triangle grid
         for i in range(9):
             ax.plot([0,14],[2*i,2*i],'k-',lw=2,zorder=0)
@@ -131,11 +127,15 @@ class Board:
             ax.plot([2*i,8+i],[0,16-(2*i)],'k-',lw=2,zorder=0)
             ax.plot([14-(2*i),6-i],[0,16-(2*i)],'k-',lw=2,zorder=0)
 
-        ax.plot([2,0],[0,4],'k-',lw=2)
-        ax.plot([0,6],[4,16],'k-',lw=2)
+        # Draw borders of board
+        ax.plot([6,8],[16,16],'k-',lw=2,zorder=2)
+        ax.plot([2,12],[0,0],'k-',lw=2,zorder=2)
+        
+        ax.plot([2,0],[0,4],'k-',lw=2,zorder=2)
+        ax.plot([0,6],[4,16],'k-',lw=2,zorder=2)
 
-        ax.plot([12,14],[0,4],'k-',lw=2)
-        ax.plot([14,8],[4,16],'k-',lw=2)
+        ax.plot([12,14],[0,4],'k-',lw=2,zorder=2)
+        ax.plot([14,8],[4,16],'k-',lw=2,zorder=2)
 
         ax.set_xlim([-1,15])
         ax.set_ylim([-1,17])

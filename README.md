@@ -1,12 +1,16 @@
 # Triangle puzzle
 This repository contains the infrastructure I've assembled to document solutions to my triangle puzzle. The goal of the puzzle is to fit the 12 pieces into the given frame. I've called it the triangle puzzle because each piece can be constructed out of 6 equilateral triangles. The individual pieces, and a picture of one example solution, can be found in the `assets/` folder.
 
-I've had this puzzle for most of my life, and started informally documenting solutions around 2002. I have never spontaneously arrived at a solution I had already found and documented, so I've gotten more and more curious how many solutions actually exist.
+I've had this puzzle for most of my life, and started informally documenting solutions around 2002. Until September 2018, the same solution had never been found twice. At that point about 580 solutions had been discovered, so I'm curious how many solutions actually exist.
 
-Many solutions have sister solutions reachable by flipping or rotating two or three pieces that form a symmetric shape. I've identified these groups by providing both an ID and a sub-ID for each solution; solutions in a sister group share an ID. I don't have a formal definition of how major a transformation has to be to qualify as a new solution instead of a sister solution: but ultimately it doesn't really matter if you just want to know how many unique solutions there are. I've generally considered any solution found by looking at existing solution as a sister solution to that one.
+Many solutions have sister solutions reachable by flipping or rotating two or three pieces that form a symmetric shape. I've identified these groups by providing both an ID and a sub-ID for each solution; solutions in a sister group share an ID. There is no formal definition of how major a transformation has to be to qualify as a new solution instead of a sister solution: but ultimately it doesn't really matter if you just want to know how many unique solutions there are. I've generally considered any solution found by looking at an existing solution as a sister solution to that one.
 
 ## Computational approaches
-If you are interested in finding all solutions to this puzzle computationally, feel free to use the resources from this repository. You may also find [solvin-da-puzzle](https://github.com/BenEgeIzmirli/solvin-da-puzzle) useful; it is a theoretically complete project to compute all solutions to this puzzle, but is too inefficient to produce any in practice. I am interested to know how many solutions exist (contact me for starting ideas if you decide to take this on!), but please do not use this repo as your workspace and please do not flood `solutions.csv` with computer-generated solutions -- I'd like to slowly fill that thing out with my own blood, sweat, and tears.
+If you are interested in finding all solutions to this puzzle computationally, feel free to use the resources from this repository. You may also want to check out other projects devoted to solving the puzzle:
+- [solvin-da-puzzle](https://github.com/BenEgeIzmirli/solvin-da-puzzle) is a theoretically complete project to compute all solutions to this puzzle, but is too inefficient to produce any in practice without choosing a starting point where several pieces have already been placed
+- [TrianglePuzzle](https://github.com/JacksonRudd/TrianglePuzzle) is also a theoretically complete project to compute all solutions, but in practice it only produces 723 - too few to plausibly be all of them. We don't know what flaw is causing the project to miss solutions.
+
+I am interested to know how many solutions exist (feel free to contact me for starting ideas if you decide to take this on!), but please do not use this repo as your workspace and please do not flood `solutions.csv` with computer-generated solutions - I'd like for all solutions recorded there to be discovered manually.
 
 ## ...manual approaches?
 If (heaven forbid) you find yourself compelled to solve this puzzle manually without the physical thing at your fingertips, feel free to add your solutions. If you're interested in getting the physical thing at your fingertips, contact me; I have a vague interest in making or ordering 3D printed copies of this puzzle, but have no motivation to do so. You could receive the first prototype!
@@ -41,7 +45,7 @@ Example solution and corresponding encoding:
 </table>
 
 ### Adding a solution with Python
-While it is possible to enter a solution directly into `solutions.csv`, I would strongly prefer that solutions be entered with Python to avoid typos and invalid entries.
+While it is possible to enter a solution directly into `solutions.csv`, it's critical that solutions be entered with Python, both to avoid typos and invalid entries and to ascertain that the solution has not already been discovered.
 
 #### Dependencies
 To use the Python code, you will need [matplotlib](https://matplotlib.org/). The main code is currently in a Jupyter notebook, `puzzle.ipynb`, but the code in it can be copied into a regular Python file and run from there if preferred. It's written in Python 3, but everything will work in Python 2 if you replace `input` in the notebook's `getSolution()` function with `raw_input`.
@@ -56,4 +60,4 @@ You'll need to fill in the parameters in the notebook with your solution's info.
 
 4. (And I can't fully rule out) a stack trace. If this happens, please [file an issue](https://github.com/corinaminer/triangle-puzzle/issues/new) with your stack trace and parameters so I can fix it. If you want to debug it yourself, great, but please notify me of the bug. Feel free to do so by putting up a pull request with your fix! ;)
 
-Once you have successfully entered your solution, there are two possible messages you may see. Most likely, your solution will be a new unique solution, and you will get a congratulations message with the ID and sub-ID assigned to it. However, it's also possible that you've found a solution that's already recorded, in which case it will tell you so. **This has never happened so far. PLEASE LET ME KNOW if you independently find a solution that has already been discovered - I'd like to have that information for statistical purposes!**
+Once you have successfully entered your solution, there are two possible messages you may see. Most likely, your solution will be a new unique solution, and you will get a congratulations message with the ID and sub-ID assigned to it. However, it's also possible that you've found a solution that's already recorded, in which case it will tell you so. **This has only happened once. PLEASE LET ME KNOW if you independently find a solution that has already been discovered - I'd like to have that information for statistical purposes!**

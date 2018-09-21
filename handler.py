@@ -117,8 +117,10 @@ class Filewriter:
         print(solution)
         self.add_to_solution_dict(solution)
         self.record_id_and_sub_id(solution)
-        with open(SOLUTION_FILENAME, "a") as f:
-            f.write('\n' + solution.line_for_file())
+        with open(SOLUTION_FILENAME, "r") as f:
+            solns = f.read().strip()
+        with open(SOLUTION_FILENAME, "w") as f:
+            f.write(solns + '\n' + solution.line_for_file())
 
     def add_to_solution_dict(self, solution):
         hex_str = solution.get_hex_str()

@@ -1,7 +1,7 @@
 # Triangle puzzle
 This repository contains the infrastructure I've assembled to document solutions to my triangle puzzle. The goal of the puzzle is to fit the 12 pieces into the given frame. I've called it the triangle puzzle because each piece can be constructed out of 6 equilateral triangles. The individual pieces, and a picture of one example solution, can be found in the `assets/` folder.
 
-I've had this puzzle for most of my life, and started informally documenting solutions around 2002. Until September 2018, the same solution had never been discovered twice; since then two more repeat solutions have been found. Given that we've discovered over 600 solutions total, I'm curious how many actually exist.
+I've had this puzzle for most of my life, and started informally documenting solutions around 2002. Until September 2018, the same solution had never been discovered twice; there have now been a total of four repeat solutions found. Given that we've discovered over 600 solutions total, I'm curious how many actually exist.
 
 Many solutions have sister solutions reachable by flipping or rotating two or three pieces that form a symmetric shape. I've identified these groups by providing both an ID and a sub-ID for each solution; solutions in a sister group share an ID. There is no formal definition of how major a transformation has to be to qualify as a new solution instead of a sister solution: but ultimately it doesn't really matter if you just want to know how many unique solutions there are. I've generally considered any solution found by looking at an existing solution as a sister solution to that one.
 

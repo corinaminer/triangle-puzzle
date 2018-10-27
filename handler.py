@@ -42,12 +42,21 @@ class Solution:
             s += base_str[0:row_width][::-1]
             base_str = base_str[row_width:]
         return s
+    
+    def difference(self, other_hex_str):
+        hex_str = self.get_hex_str()
+        matches = 0
+        for i in range(len(hex_str)):
+            if hex_str[i] == other_hex_str[i]:
+                matches += 1
+        return matches
 
 
 class Filewriter:
     
     def __init__(self):
         self.sol_dict = {}
+        self.id_dict = {}
         self.sub_id_maxes = []
         self.discoverers = []
         try:
@@ -58,7 +67,7 @@ class Filewriter:
                         continue
                     try:
                         solution = self.parse_line(line.strip())
-                        self.add_to_solution_dict(solution)
+                        self.add_to_dicts(solution)
                         self.record_id_and_sub_id(solution)
                         self.discoverers.append(solution.discoverer)
                     except Exception as e:
@@ -115,18 +124,24 @@ class Filewriter:
         
         print("Congratulations, you've produced a new solution:")
         print(solution)
-        self.add_to_solution_dict(solution)
+        self.add_to_dicts(solution)
         self.record_id_and_sub_id(solution)
         with open(SOLUTION_FILENAME, "r") as f:
             solns = f.read().strip()
         with open(SOLUTION_FILENAME, "w") as f:
             f.write(solns + '\n' + solution.line_for_file())
 
-    def add_to_solution_dict(self, solution):
+    def add_to_dicts(self, solution):
         hex_str = solution.get_hex_str()
         self.sol_dict[hex_str] = solution
         self.sol_dict[solution.get_reflection_str()] = hex_str
-    
+        if solution.id not in self.id_dict:
+            self.id_dict[solution.id] = []
+        id_list = self.id_dict[solution.id]
+        while len(id_list) < solution.sub_id:
+            id_list.append(None)
+        id_list[solution.sub_id - 1] = solution
+   
     def notify_found_dup(self, hex_str):
         val = self.sol_dict[hex_str]
         if type(val) == str:

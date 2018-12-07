@@ -50,9 +50,8 @@ def add_new_solution(solution, solution_strs):
     solution_strs.add(solution.get_reflection_str())
     return len(solution_strs) == initial_num_solutions + 2
 
-def failure(line_num, msg):
-    print("[line " + str(line_num) + "] " + msg)
-    return 1
+def format_line(line_num):
+    return "[line " + str(line_num) + "] "
 
 def test():
     try:
@@ -70,22 +69,20 @@ def test():
                     continue
                 # This still allows for one blank line at the end
                 if line.strip() == '':
-                    return failure(line_num, "Unexpected blank line")
+                    raise Exception(format_line(line_num) + "Unexpected blank line")
                 try:
                     solution = parse_line(line.strip())
                 except Exception as e:
-                    return failure(line_num, "Unable to interpret line:\n\t" + line + "\n" + str(e))
+                    raise Exception(format_line(line_num) + "Unable to interpret line:\n\t" + line + "\n" + str(e))
                 if not ids_in_order(prev_id, prev_sub_id, solution):
-                    return failure(line_num, "Solutions out of order: " + str(prev_id) + "."+ str(prev_sub_id)
-                          + ", " + str(solution.id) + "." + str(solution.sub_id))
+                    raise Exception(format_line(line_num) + "Solutions out of order: " + str(prev_id) + "."+ str(prev_sub_id)
+                                    + ", " + str(solution.id) + "." + str(solution.sub_id))
                 if not add_new_solution(solution, solution_strs):
-                    return failure(line_num, "Duplicate solution: " + solution.get_hex_str())
+                    raise Exception(format_line(line_num) + "Duplicate solution: " + solution.get_hex_str())
                 prev_id = solution.id
                 prev_sub_id = solution.sub_id
     except IOError:
         # File doesn't exist
-        print("Could not find solutions.csv")
-        return 1
-    return 0
+        raise Exception("Could not find solutions.csv")
 
-assert test() == 0
+test()

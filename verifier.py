@@ -2,9 +2,9 @@ import datetime
 
 OK_CHARS = set('0123456789ab')
 EXPECTED_CHARS = []
-for i in range(12):
-    for j in range(6):
-        EXPECTED_CHARS.append(str(hex(i))[2])
+for piece_id in range(12):
+    for triangle_count in range(6):
+        EXPECTED_CHARS.append(str(hex(piece_id))[2])
 
 class Verifier:
     

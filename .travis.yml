@@ -1,4 +1,3 @@
-# Travis
 language: python
 
 script:

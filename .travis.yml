@@ -1,0 +1,5 @@
+# Travis
+language: python
+
+script:
+  - python test.py

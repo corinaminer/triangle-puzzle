@@ -129,7 +129,7 @@ class Filewriter:
         with open(SOLUTION_FILENAME, "r") as f:
             solns = f.read().strip()
         with open(SOLUTION_FILENAME, "w") as f:
-            f.write(solns + '\n' + solution.line_for_file())
+            f.write(solns + "\n" + solution.line_for_file() + "\n")
 
     def add_to_dicts(self, solution):
         hex_str = solution.get_hex_str()

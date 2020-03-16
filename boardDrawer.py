@@ -1,12 +1,20 @@
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 
+# Makes all the tiles different colors, for debugging
+# COLOR_DICT = {'r':(1,0.2,0.2), 'g':(0.2,1,0.2), 'b':(0.2,0.2,1), 'w':(1,1,1), 'o':(1,0.6,0.2), 'y':(1,1,0.2),
+#              'r1':(1,0.6,0.6), 'g1':(0.6,1,0.6), 'b1':(0.6,0.6,1), 'w1':(0,0,0), 'o1':(1,0.2,0.6), 'y1':(1,1,0.6)}
+# TILE_COLORS = ['r', 'g', 'b', 'w', 'o', 'y', 'r1', 'g1', 'b1', 'w1', 'o1', 'y1']
+
 COLOR_DICT = {'r':(1,0.2,0.2), 'g':(0.2,1,0.2), 'b':(0.2,0.2,1), 'w':(1,1,1), 'o':(1,0.6,0.2), 'y':(1,1,0.2)}
 TILE_COLORS = ['r', 'g', 'b', 'w', 'o', 'y', 'r', 'g', 'b', 'w', 'o', 'y']
 
 ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11]
 COL_STARTS = [7 - rw // 2 - 1 for rw in ROW_WIDTHS]
 COL_ENDS = [7 + rw // 2 - 1 for rw in ROW_WIDTHS] # inclusive
+
+# Scales the puzzle relative to the axes. Not really useful; you probably want Board.FIGSIZE instead.
+SCALE_FACTOR = 1
 
 class Triangle:
     
@@ -27,17 +35,23 @@ class Triangle:
         self.color = COLOR_DICT[TILE_COLORS[self.tile_id]]
         
     def get_coords(self):
-        left_x = self.col
-        left_y = 16 - 2*self.row
+        left_x = self.col * SCALE_FACTOR
+        left_y = (16 - 2*self.row) * SCALE_FACTOR
         if self.up:
-            left_y -= 2
-            return [[left_x, left_y], [left_x + 2, left_y], [left_x + 1, left_y + 2]]
-        return [[left_x, left_y], [left_x + 2, left_y], [left_x + 1, left_y - 2]]
+            left_y -= 2 * SCALE_FACTOR
+            bottom_right = [left_x + 2*SCALE_FACTOR, left_y]
+            top = [left_x + 1*SCALE_FACTOR, left_y + 2*SCALE_FACTOR]
+            return [[left_x, left_y], bottom_right, top]
+        top_right = [left_x + 2*SCALE_FACTOR, left_y]
+        bottom = [left_x + 1*SCALE_FACTOR, left_y - 2*SCALE_FACTOR]
+        return [[left_x, left_y], top_right, bottom]
     
     def __repr__(self):
         return str(self.tile_id)
 
 class Board:
+    # Sizes the axes for the board. Affects jupyter inline images and exported matplotlib images.
+    FIGSIZE = 5
     
     def __init__(self):
         self.ax = self.blank_board()
@@ -98,28 +112,25 @@ class Board:
         wanna add tile or something? pass the sweet object returned from this function to addTile along with coords!
         fuckin matplotlib objects mate. yeah!!!
         '''
-        plt.figure(figsize=(10,10))
-
-        pts = [[0,4], [2,0], [-1,-1]]
-        bl = Polygon(pts, closed=True,color='white')
-
-        pts = [[12,0], [16,-1], [14,4]]
-        br = Polygon(pts,closed=True,color='white')
-
-        pts = [[-1,17], [6,16], [0,4]]
-        tl = Polygon(pts,closed=True,color='white')
-
-        pts = [[15,17], [8,16], [14,4]]
-        tr = Polygon(pts,closed=True,color='white')
-
-
+        plt.figure(figsize=(Board.FIGSIZE, Board.FIGSIZE))
         ax = plt.gca()
-        ax.add_patch(tl)
-        ax.add_patch(tr)
-        ax.add_patch(bl)
-        ax.add_patch(br)
+        
+        # This would create the white blotches at the corners without scaling them...
+        pts_bl = [[0,4], [2,0], [-1,-1]]
+        pts_br = [[12,0], [16,-1], [14,4]]
+        pts_tl = [[-1,17], [6,16], [0,4]]
+        pts_tr = [[15,17], [8,16], [14,4]]
+        
+        # ...so scale them all
+        for pts in [pts_bl, pts_br, pts_tl, pts_tr]:
+            for coords in pts:
+                for i in range(len(coords)):
+                    coords[i] = coords[i] * SCALE_FACTOR
+            blotch = Polygon(pts, closed=True, color='white')
+            ax.add_patch(blotch)
 
         # This section draws lines to highlight the triangle grid
+        # SCALE_FACTOR assumed to be 1 :/
 #        for i in range(9):
 #            ax.plot([0,14],[2*i,2*i],'k-',lw=2,zorder=0)
 
@@ -127,17 +138,24 @@ class Board:
 #            ax.plot([2*i,8+i],[0,16-(2*i)],'k-',lw=2,zorder=0)
 #            ax.plot([14-(2*i),6-i],[0,16-(2*i)],'k-',lw=2,zorder=0)
 
-        # Draw borders of board
-        ax.plot([6,8],[16,16],'k-',lw=2,zorder=2)
-        ax.plot([2,12],[0,0],'k-',lw=2,zorder=2)
+        # Draw borders of board. note these aren't [[x,y], [x,y]], they're [[x1,x2], [y1,y2]]
+        top_edge = [[6,8],[16,16]]
+        bottom_edge = [[2,12],[0,0]]
         
-        ax.plot([2,0],[0,4],'k-',lw=2,zorder=2)
-        ax.plot([0,6],[4,16],'k-',lw=2,zorder=2)
+        bottom_left = [[2,0],[0,4]]
+        top_left = [[0,6],[4,16]]
 
-        ax.plot([12,14],[0,4],'k-',lw=2,zorder=2)
-        ax.plot([14,8],[4,16],'k-',lw=2,zorder=2)
+        bottom_right = [[12,14],[0,4]]
+        top_right = [[14,8],[4,16]]
+        
+        # Scale coords for the borders and draw them
+        for pts in [top_edge, bottom_edge, bottom_left, top_left, bottom_right, top_right]:
+            for coords in pts:
+                for i in range(len(coords)):
+                    coords[i] = coords[i] * SCALE_FACTOR
+            ax.plot(pts[0], pts[1], 'k-', lw=2, zorder=2)
 
-        ax.set_xlim([-1,15])
-        ax.set_ylim([-1,17])
+        ax.set_xlim([-0.1*SCALE_FACTOR,14.1*SCALE_FACTOR])
+        ax.set_ylim([-0.1*SCALE_FACTOR,16.1*SCALE_FACTOR])
         ax.axis('off')
         return ax

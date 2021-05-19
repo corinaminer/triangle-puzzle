@@ -18,7 +18,7 @@ If (heaven forbid) you find yourself compelled to solve this puzzle manually wit
 ## How solutions are encoded
 The key to the encoding of this puzzle is that the frame can be broken down into 72 triangles:
 
-![blank puzzle](https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/blank.png)
+<img src="https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/blank.jpg" width="32%"/>
 
 Solutions are recorded as 72-character strings. Each character corresponds to 1 triangle in the frame area. The solution is applied to the frame in rows from left to right: the first three characters correspond to the three triangles in the first row, next five characters to the five triangles in the second row, and so on. The character indicates which puzzle piece is covering that triangle in the solution. Each of the 12 pieces is assigned a character according to the key:
 

@@ -2,7 +2,17 @@ import { COLS, H, L, ROWS } from "./consts.js";
 import { grid } from "./puzz.js";
 import { Point } from "./utils.js";
 
-const piece_opacity = "70%";
+const RED = "255 0 0";
+const GREEN = "0 255 0";
+const BLUE = "0 0 255";
+const WHITE = "255 255 255";
+const ORANGE = "255 170 0";
+const YELLOW = "255 255 0";
+const PIECE_OPACITY = "70%";
+
+function toPieceFillStyle(color) {
+    return "rgb(" + color + " / " + PIECE_OPACITY + ")";
+}
 
 class VertexMapping {
     constructor(tIndex, cornerId) {
@@ -184,7 +194,7 @@ class Piece {
         for (const v of vertices) {
             this.path.lineTo(v.x, v.y);
         }
-        ctx.fillStyle = this.color;
+        ctx.fillStyle = toPieceFillStyle(this.color);
         ctx.fill(this.path);
         ctx.stroke(this.path);
     }
@@ -259,7 +269,7 @@ class Heart extends Piece {
     constructor() {
         super();
         this.id = "0";
-        this.color = "rgb(255 0 0 / " + piece_opacity + ")";
+        this.color = RED;
         const start_row = 1;
         const start_col = 5;
         this.triangles = [
@@ -287,7 +297,7 @@ class Hook extends Piece {
     constructor() {
         super();
         this.id = "1";
-        this.color = "rgb(0 255 0 / " + piece_opacity + ")";
+        this.color = GREEN;
         const start_row = 2;
         const start_col = 12;
         this.triangles = [
@@ -316,7 +326,7 @@ class Mountain extends Piece {
     constructor() {
         super();
         this.id = "2";
-        this.color = "rgb(0 0 255 / " + piece_opacity + ")";
+        this.color = BLUE;
         const start_row = 5;
         const start_col = 1;
         this.triangles = [
@@ -344,7 +354,7 @@ class Y extends Piece {
     constructor() {
         super();
         this.id = "3";
-        this.color = "rgb(255 255 255 / " + piece_opacity + ")";
+        this.color = WHITE;
         const start_row = 6;
         const start_col = 10;
         this.triangles = [
@@ -373,7 +383,7 @@ class Bow extends Piece {
     constructor() {
         super();
         this.id = "4";
-        this.color = "rgb(255 170 0 / " + piece_opacity + ")";
+        this.color = ORANGE;
         const start_row = 9;
         const start_col = 3;
         this.triangles = [
@@ -401,7 +411,7 @@ class Hexagon extends Piece {
     constructor() {
         super();
         this.id = "5";
-        this.color = "rgb(255 255 0 / " + piece_opacity + ")";
+        this.color = YELLOW;
         this.triangles = [];
         for (let j = 0; j < 2; j++) {
             for (let i = 0; i < 3; i++) {
@@ -427,7 +437,7 @@ class Chevron extends Piece {
     constructor() {
         super();
         this.id = "6";
-        this.color = "rgb(255 0 0 / " + piece_opacity + ")";
+        this.color = RED;
         const start_row = 6;
         const start_col = 28;
         this.triangles = [
@@ -455,7 +465,7 @@ class Lightning extends Piece {
     constructor() {
         super();
         this.id = "7";
-        this.color = "rgb(0 255 0 / " + piece_opacity + ")";
+        this.color = GREEN;
         const start_row = 6;
         const start_col = 36;
         this.triangles = [
@@ -485,7 +495,7 @@ class Check extends Piece {
     constructor() {
         super();
         this.id = "8";
-        this.color = "rgb(0 0 255 / " + piece_opacity + ")";
+        this.color = BLUE;
         const start_row = 9;
         const start_col = 35;
         this.triangles = [
@@ -513,7 +523,7 @@ class Line extends Piece {
     constructor() {
         super();
         this.id = "9";
-        this.color = "rgb(255 255 255 / " + piece_opacity + ")";
+        this.color = WHITE;
         const start_row = 2;
         const start_col = 34;
         this.triangles = [
@@ -539,7 +549,7 @@ class A extends Piece {
     constructor() {
         super();
         this.id = "a";
-        this.color = "rgb(255 170 0 / " + piece_opacity + ")";
+        this.color = ORANGE;
         const start_row = 12;
         const start_col = 28;
         this.triangles = [
@@ -568,7 +578,7 @@ class Triangly extends Piece {
     constructor() {
         super();
         this.id = "b";
-        this.color = "rgb(255 255 0 / " + piece_opacity + ")";
+        this.color = YELLOW;
         const start_row = 2;
         const start_col = 26;
         this.triangles = [

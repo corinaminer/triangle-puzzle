@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <head>
-  <link type="text/css" rel="stylesheet" href="./x.css">
+  <link type="text/css" rel="stylesheet" href="./puzz.css">
 </head>
-<canvas id="canvas" width="1003" height="690"></canvas>
+<body>
+  <div class="displayContainer centerFlex">
+    <div class="space-around">
+      <div><button id="solveButton">Solve</button></div>
+      <div><button id="resetButton">Reset</button></div>
+      <div><button id="modeButton">Light mode</button></div>
+    </div>
+  </div>
+  <div class="displayContainer centerFlex">
+      <canvas id="canvas" display="flex" width="1003" height="690"></canvas>
+  </div>
+</body>
 <script type="module" src="./puzz.js"></script>

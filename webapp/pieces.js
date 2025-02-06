@@ -1,5 +1,5 @@
 import { COLS, H, L, ROWS } from "./consts.js";
-import { grid } from "./puzz.js";
+import { grid } from "../puzz.js";
 import { colors, Point } from "./utils.js";
 
 const PIECE_OPACITY = 0.7;

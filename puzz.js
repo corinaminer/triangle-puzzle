@@ -1,8 +1,8 @@
-import { COLS, H, L, ROWS } from "./consts.js";
-import { draw_gridlines_and_border, initForGridAndPuzzle } from "./grid_drawer.js";
-import { initPieces } from "./pieces.js";
-import { checkSolution } from "./solution_handler.js";
-import { colors, Point } from "./utils.js";
+import { COLS, H, L, ROWS } from "./webapp/consts.js";
+import { draw_gridlines_and_border, initForGridAndPuzzle } from "./webapp/grid_drawer.js";
+import { initPieces } from "./webapp/pieces.js";
+import { checkSolution } from "./webapp/solution_handler.js";
+import { colors, Point } from "./webapp/utils.js";
 
 function triangle_tip_coords(r, c, up) {
     const tip_x = (c + 1) * L / 2;

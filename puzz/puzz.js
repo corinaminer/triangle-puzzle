@@ -2,7 +2,7 @@ import { COLS, H, L, ROWS } from "./consts.js";
 import { draw_gridlines_and_border, initForGridAndPuzzle } from "./grid_drawer.js";
 import { initPieces } from "./pieces.js";
 import { checkSolution } from "./solution_handler.js";
-import { Point } from "./utils.js";
+import { colors, Point } from "./utils.js";
 
 function triangle_tip_coords(r, c, up) {
     const tip_x = (c + 1) * L / 2;
@@ -71,7 +71,7 @@ initForGridAndPuzzle(grid, puzzle);
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-const pieces = initPieces();
+let pieces = initPieces();
 
 let clickedPiece;
 let pickupCoords;
@@ -79,18 +79,24 @@ let isDragging = false;
 let isDrawing = false;
 
 function redraw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgb(" + colors.backgrd + " / 1)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     draw_gridlines_and_border(ctx);
     // Draw first 11 pieces
-    for (let i = 0; i < pieces.length - 1; i++) {
+    for (let i = 0; i < 11; i++) {
         pieces[i].draw(ctx);
     }
     // If not actively moving a piece, draw 12th piece too
     if (!clickedPiece) {
-        pieces[pieces.length - 1].draw(ctx);
+        pieces[11].draw(ctx);
     } 
 }
 redraw();
+
+function get_canvas_coord(clickX, clickY) {
+    const canvasRect = canvas.getBoundingClientRect();
+    return new Point(clickX - canvasRect.left - window.scrollX, clickY - canvasRect.top - window.scrollY);
+}
 
 canvas.addEventListener("mousedown", event => {
     if (event.button == 2) {
@@ -98,11 +104,12 @@ canvas.addEventListener("mousedown", event => {
         return;
     }
     event.preventDefault();
+    const click = get_canvas_coord(event.layerX, event.layerY);
     for (let i = pieces.length - 1; i >= 0; i--) {
         const piece = pieces[i];
-        if (ctx.isPointInPath(piece.path, event.layerX, event.layerY)) {
+        if (ctx.isPointInPath(piece.path, click.x, click.y)) {
             clickedPiece = piece;
-            pickupCoords = [event.layerX, event.layerY];
+            pickupCoords = click;
             pieces.splice(i, 1);
             pieces.push(piece);
             break;
@@ -112,9 +119,10 @@ canvas.addEventListener("mousedown", event => {
 
 canvas.addEventListener("contextmenu", event => {
     event.preventDefault();
+    const click = get_canvas_coord(event.layerX, event.layerY);
     for (let i = pieces.length - 1; i >= 0; i--) {
         const piece = pieces[i];
-        if (ctx.isPointInPath(piece.path, event.layerX, event.layerY)) {
+        if (ctx.isPointInPath(piece.path, click.x, click.y)) {
             piece.flip();
             redraw();
             checkSolution(puzzle, puzzleLocs, pieces);
@@ -128,10 +136,11 @@ canvas.addEventListener("mousemove", event => {
     if (!clickedPiece || isDrawing) {
         return;
     }
+    const cursor = get_canvas_coord(event.layerX, event.layerY);
     isDragging = true;
     isDrawing = true;
     redraw();
-    clickedPiece.draw_with_offset(ctx, event.layerX - pickupCoords[0], event.layerY - pickupCoords[1]);
+    clickedPiece.draw_with_offset(ctx, cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
     isDrawing = false;
 })
 
@@ -140,15 +149,16 @@ canvas.addEventListener("mouseup", event => {
     if (!clickedPiece) {
         return;
     }
+    const cursor = get_canvas_coord(event.layerX, event.layerY);
     if (isDragging) {
-        clickedPiece.move(event.layerX - pickupCoords[0], event.layerY - pickupCoords[1]);
+        clickedPiece.move(cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
     } else {
         let clickedT;
         for (const t of clickedPiece.triangles) {
             if (!t.path) {
                 t.addPath();
             }
-            if (ctx.isPointInPath(t.path, event.layerX, event.layerY) || ctx.isPointInStroke(t.path, event.layerX, event.layerY)) {
+            if (ctx.isPointInPath(t.path, cursor.x, cursor.y) || ctx.isPointInStroke(t.path, cursor.x, cursor.y)) {
                 clickedT = t;
                 break;
             }
@@ -167,9 +177,19 @@ canvas.addEventListener("mouseout", event => {
     if (!clickedPiece) {
         return;
     }
-    clickedPiece.move(event.pageX - pickupCoords[0], event.pageY - pickupCoords[1]);
+    clickedPiece.move(event.pageX - pickupCoords.x, event.pageY - pickupCoords.y);
     clickedPiece = undefined;
     pickupCoords = undefined;
     isDragging = false;
     redraw();
 })
+
+document.getElementById("resetButton").onclick = () => {
+    pieces = initPieces();
+    redraw();
+}
+
+document.getElementById("modeButton").onclick = () => {
+    colors.switch();
+    redraw();
+}

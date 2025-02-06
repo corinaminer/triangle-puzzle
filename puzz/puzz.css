@@ -1,0 +1,16 @@
+.displayContainer {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.space-around {
+  display: flex;
+  justify-content: space-around;
+}
+
+.centerFlex {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}

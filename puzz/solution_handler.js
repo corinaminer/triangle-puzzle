@@ -1,5 +1,3 @@
-import { Point } from "./utils.js";
-
 export function checkSolution(puzzle, puzzleLocs, pieces) {
     const solMap = new Map();
     for (const p of pieces) {
@@ -10,10 +8,11 @@ export function checkSolution(puzzle, puzzleLocs, pieces) {
             solMap.set(t, p.id);
         }
     }
-    const sol = [];
+    let sol = "";
     for (const row of puzzle) {
-        sol.push(row.map(t => solMap.get(t)));
+        for (const t of row) {
+            sol += solMap.get(t);
+        }
     }
-    alert("you win! your solution is: " + sol.join(""));
+    alert("you win! your solution is: " + sol);
 }
-

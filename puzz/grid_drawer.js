@@ -1,10 +1,8 @@
 import { COLS, H, L, ROWS } from "./consts.js";
-import { Point } from "./utils.js";
+import { colors, Point, toStyle } from "./utils.js";
 
 const gridlines = [];
 const borderline = [];
-const gridlineStyle = "rgb(210, 210, 210)";
-const borderlineStyle = "black";
 
 export function initForGridAndPuzzle(grid, puzzle) {
     const row_starts = new Set();
@@ -69,6 +67,9 @@ export function initForGridAndPuzzle(grid, puzzle) {
 }
 
 export function draw_gridlines_and_border(ctx) {
+    const gridlineStyle = toStyle(colors.gridlines);
+    const borderlineStyle = toStyle(colors.puzzleBorder);
+
     // Draw gridlines
     ctx.strokeStyle = gridlineStyle;
     for (const g of gridlines) {
@@ -80,9 +81,12 @@ export function draw_gridlines_and_border(ctx) {
 
     // Draw puzzle border
     ctx.strokeStyle = borderlineStyle;
+    ctx.lineWidth = 4;
     ctx.beginPath();
     for (const vertex of borderline) {
         ctx.lineTo(vertex.x, vertex.y);
     }
+    ctx.fillStyle = "rgb(0 0 0 / 100%)";
     ctx.stroke();
+    ctx.lineWidth = 1;
 }

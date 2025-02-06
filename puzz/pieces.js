@@ -1,14 +1,8 @@
 import { COLS, H, L, ROWS } from "./consts.js";
 import { grid } from "./puzz.js";
-import { Point } from "./utils.js";
+import { colors, Point } from "./utils.js";
 
-const RED = "255 0 0";
-const GREEN = "0 255 0";
-const BLUE = "0 0 255";
-const WHITE = "255 255 255";
-const ORANGE = "255 170 0";
-const YELLOW = "255 255 0";
-const PIECE_OPACITY = "70%";
+const PIECE_OPACITY = 0.7;
 
 function toPieceFillStyle(color) {
     return "rgb(" + color + " / " + PIECE_OPACITY + ")";
@@ -194,7 +188,7 @@ class Piece {
         for (const v of vertices) {
             this.path.lineTo(v.x, v.y);
         }
-        ctx.fillStyle = toPieceFillStyle(this.color);
+        ctx.fillStyle = toPieceFillStyle(this.color());
         ctx.fill(this.path);
         ctx.stroke(this.path);
     }
@@ -269,7 +263,6 @@ class Heart extends Piece {
     constructor() {
         super();
         this.id = "0";
-        this.color = RED;
         const start_row = 1;
         const start_col = 5;
         this.triangles = [
@@ -291,13 +284,15 @@ class Heart extends Piece {
         ]
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.red;
+    }
 }
 
 class Hook extends Piece {
     constructor() {
         super();
         this.id = "1";
-        this.color = GREEN;
         const start_row = 2;
         const start_col = 12;
         this.triangles = [
@@ -320,13 +315,15 @@ class Hook extends Piece {
         ]
         this.rotationIndex = 2;
     }
+    color() {
+        return colors.green;
+    }
 }
 
 class Mountain extends Piece {
     constructor() {
         super();
         this.id = "2";
-        this.color = BLUE;
         const start_row = 5;
         const start_col = 1;
         this.triangles = [
@@ -348,13 +345,15 @@ class Mountain extends Piece {
         ]
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.blue;
+    }
 }
 
 class Y extends Piece {
     constructor() {
         super();
         this.id = "3";
-        this.color = WHITE;
         const start_row = 6;
         const start_col = 10;
         this.triangles = [
@@ -377,13 +376,15 @@ class Y extends Piece {
         ]
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.white;
+    }
 }
 
 class Bow extends Piece {
     constructor() {
         super();
         this.id = "4";
-        this.color = ORANGE;
         const start_row = 9;
         const start_col = 3;
         this.triangles = [
@@ -405,13 +406,15 @@ class Bow extends Piece {
         ]
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.orange;
+    }
 }
 
 class Hexagon extends Piece {
     constructor() {
         super();
         this.id = "5";
-        this.color = YELLOW;
         this.triangles = [];
         for (let j = 0; j < 2; j++) {
             for (let i = 0; i < 3; i++) {
@@ -431,13 +434,15 @@ class Hexagon extends Piece {
     flip() {
         return;
     }
+    color() {
+        return colors.yellow;
+    }
 }
 
 class Chevron extends Piece {
     constructor() {
         super();
         this.id = "6";
-        this.color = RED;
         const start_row = 6;
         const start_col = 28;
         this.triangles = [
@@ -459,13 +464,15 @@ class Chevron extends Piece {
         ]
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.red;
+    }
 }
 
 class Lightning extends Piece {
     constructor() {
         super();
         this.id = "7";
-        this.color = GREEN;
         const start_row = 6;
         const start_col = 36;
         this.triangles = [
@@ -489,13 +496,15 @@ class Lightning extends Piece {
         ]
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.green;
+    }
 }
 
 class Check extends Piece {
     constructor() {
         super();
         this.id = "8";
-        this.color = BLUE;
         const start_row = 9;
         const start_col = 35;
         this.triangles = [
@@ -517,13 +526,15 @@ class Check extends Piece {
         ]
         this.rotationIndex = 5;
     }
+    color() {
+        return colors.blue;
+    }
 }
 
 class Line extends Piece {
     constructor() {
         super();
         this.id = "9";
-        this.color = WHITE;
         const start_row = 2;
         const start_col = 34;
         this.triangles = [
@@ -543,13 +554,15 @@ class Line extends Piece {
         ]
         this.rotationIndex = 2;
     }
+    color() {
+        return colors.white;
+    }
 }
 
 class A extends Piece {
     constructor() {
         super();
         this.id = "a";
-        this.color = ORANGE;
         const start_row = 12;
         const start_col = 28;
         this.triangles = [
@@ -572,13 +585,15 @@ class A extends Piece {
         ];
         this.rotationIndex = 3;
     }
+    color() {
+        return colors.orange;
+    }
 }
 
 class Triangly extends Piece {
     constructor() {
         super();
         this.id = "b";
-        this.color = YELLOW;
         const start_row = 2;
         const start_col = 26;
         this.triangles = [
@@ -598,6 +613,9 @@ class Triangly extends Piece {
             new VertexMapping(0, 0),
         ];
         this.rotationIndex = 3;
+    }
+    color() {
+        return colors.yellow;
     }
 }
 

@@ -1,8 +1,12 @@
 import { COLS, H, L, ROWS } from "./webapp/consts.js";
 import { draw_gridlines_and_border, initForGridAndPuzzle } from "./webapp/grid_drawer.js";
 import { initPieces } from "./webapp/pieces.js";
-import { checkSolution } from "./webapp/solution_handler.js";
+import { checkSolution, populateSolutions } from "./webapp/solution_handler.js";
 import { colors, Point } from "./webapp/utils.js";
+
+fetch("./solutions.csv")
+  .then(response => response.text())
+  .then(csvText => populateSolutions(csvText.split('\n').map(row => row.split(','))));
 
 function triangle_tip_coords(r, c, up) {
     const tip_x = (c + 1) * L / 2;

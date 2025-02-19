@@ -6,3 +6,6 @@ export const COLS = 39;
 // Dimensions of a triangle
 export const L = 50;
 export const H = Math.round(L * Math.sqrt(3) / 2);
+
+// Widths of each row in the puzzle
+export const ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11];

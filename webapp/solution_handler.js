@@ -1,4 +1,5 @@
-const ROW_WIDTHS = [3, 5, 7, 9, 11, 13, 13, 11];
+import { ROW_WIDTHS } from "./consts.js";
+import { showWinOverlay } from "./overlay_handler.js";
 
 let solutions = {};
 let mirrors = {};
@@ -44,6 +45,7 @@ export function checkSolution(puzzle, puzzleLocs, pieces) {
             solMap.set(t, p.id);
         }
     }
+
     let sol = "";
     for (const row of puzzle) {
         for (const t of row) {
@@ -52,20 +54,10 @@ export function checkSolution(puzzle, puzzleLocs, pieces) {
     }
 
     let isMirror = false;
-    let rediscoverMsg;
-    if (mirrors[sol]) {
+    let solData = solutions[sol];
+    if (!solData && mirrors[sol]) {
         isMirror = true;
-        sol = mirrors[sol];
+        solData = solutions[mirrors[sol]];
     }
-    const solData = solutions[sol];
-    if (solData) {
-        rediscoverMsg = "Congratulations! You've found " + (isMirror ? "the mirror image of " : "") + "solution "
-        rediscoverMsg += solData["id"] + ", first discovered by " + solData["author"] + " on " + (solData["date"] || " an unknown date (2001-2014)") + "!";
-    }
-
-    if (rediscoverMsg) {
-        alert(rediscoverMsg);
-    } else {
-        alert("Congratulations, you have discovered a new solution!!!\n" + sol);
-    }
+    showWinOverlay(sol, solData, isMirror);
 }

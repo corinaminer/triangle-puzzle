@@ -47,20 +47,18 @@ canvas {
   right: 0;
   width: 30px;
   height: 30px;
-  color: black;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #111;
   font-size: 18px;
   font-weight: bold;
+  font-family: Arial, sans-serif;
   cursor: pointer;
-  line-height: 1; /* Prevents text from affecting height */
-  font-family: Arial, sans-serif; /* Ensures consistent rendering */
-  transform: translateY(1px); /* Moves the ? slightly down */
 }
 
-.overlay-text {
+.overlay {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -74,11 +72,11 @@ canvas {
   font-family: Arial, sans-serif;
 }
 
-.overlay-text.active {
+.overlay.active {
   display: block;
 }
 
-.overlay-text .close-btn {
+.overlay .close-btn {
   position: absolute;
   top: 5px;
   right: 10px;
@@ -86,7 +84,7 @@ canvas {
   cursor: pointer;
 }
 
-.overlay {
+.overlay-bkgd {
   position: fixed;
   top: 0;
   left: 0;
@@ -96,6 +94,6 @@ canvas {
   display: none;
 }
 
-.overlay.active {
+.overlay-bkgd.active {
   display: block;
 }

@@ -1,26 +1,24 @@
-# Triangle puzzle
-This repository contains the infrastructure I've assembled to document solutions to my triangle puzzle. The goal of the puzzle is to fit the 12 pieces into the given frame. I've called it the triangle puzzle because each piece can be constructed out of 6 equilateral triangles. The individual pieces, and a picture of one example solution, can be found in the `assets/` folder.
+# NEW: Solve online!
+Check out the new [online solver](https://corinaminer.github.io/triangle-puzzle/)! Let me know what you think. I will be continuing to make minor improvements in the coming weeks.
 
-I've had this puzzle for most of my life, and started informally documenting solutions around 2002. Until September 2018, the same solution had never been discovered twice; there have now been a total of four repeat solutions found. Given that we've discovered over 600 solutions total, I'm curious how many actually exist.
+# About the triangle puzzle
+This repository documents manually discovered solutions to my triangle puzzle. The goal is to fit the 12 pieces into the given frame, as shown below. I've called it the triangle puzzle because each piece can be constructed out of 6 equilateral triangles. Notably, the 12 pieces represent ALL possible arrangements of 6 equilateral triangles joined edge-to-edge on a triangular grid, a.k.a. ["hexiamonds"](https://mathworld.wolfram.com/Hexiamond.html).
 
-Many solutions have sister solutions reachable by flipping or rotating two or three pieces that form a symmetric shape. I've identified these groups by providing both an ID and a sub-ID for each solution; solutions in a sister group share an ID. There is no formal definition of how major a transformation has to be to qualify as a new solution instead of a sister solution: but ultimately it doesn't really matter if you just want to know how many unique solutions there are. I've generally considered any solution found by looking at an existing solution as a sister solution to that one.
+<img src="https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/example_solution.png"/>
 
-## Computational approaches
-If you are interested in finding all solutions to this puzzle computationally, feel free to use the resources from this repository. You may also want to check out other projects devoted to solving the puzzle:
-- [solvin-da-puzzle](https://github.com/BenEgeIzmirli/solvin-da-puzzle) is a theoretically complete project to compute all solutions to this puzzle, but is too inefficient to produce any in practice without choosing a starting point where several pieces have already been placed
-- [TrianglePuzzle](https://github.com/JacksonRudd/TrianglePuzzle) is also a theoretically complete project to compute all solutions, but in practice it only produces 723 - too few to plausibly be all of them. We don't know what flaw is causing the project to miss solutions.
+I've had this puzzle for most of my life, and started documenting solutions around 2002. Thanks to [David Goodger's Polyform Puzzler site](https://puzzler.sourceforge.net/docs/hexiamonds.html), we know the total number of solutions is 5885. This was recently reconfirmed by user kqyrt's [comprehensive solution list](https://github.com/corinaminer/triangle-puzzle/issues/14), which contains 11770 solutions including mirror images.
 
-I am interested to know how many solutions exist (feel free to contact me for starting ideas if you decide to take this on!), but please do not use this repo as your workspace and please do not flood `solutions.csv` with computer-generated solutions - I'd like for all solutions recorded there to be discovered manually.
+I created this repo in 2018 to more efficiently document new solutions and programmatically check if they had already been discovered. At that time, I had discovered about 400 unique solutions and never found a repeat. The first repeat was found in September 2018.
 
-## ...manual approaches?
-If (heaven forbid) you find yourself compelled to solve this puzzle manually without the physical thing at your fingertips, feel free to add your solutions. If you're interested in getting the physical thing at your fingertips, contact me; I have a vague interest in making or ordering 3D printed copies of this puzzle, but have no motivation to do so. You could receive the first prototype!
+## Sister solutions
+Many solutions have sister solutions reachable by flipping or rotating a group of pieces that forms a symmetric shape, swapping two groups of pieces that form the same shape, or otherwise adjusting the original. I've identified sisters by providing both an ID and a sub-ID for each solution; sister solutions share the same ID. There is no formal definition of how major a transformation has to be to qualify as a new solution instead of a sister solution: but ultimately it doesn't really matter if you just want to know how many unique solutions there are. I've generally considered any solution found by looking at an existing solution as a sister solution to that one.
 
 ## How solutions are encoded
-The key to the encoding of this puzzle is that the frame can be broken down into 72 triangles:
+If you find a new solution with the [online solver](https://corinaminer.github.io/triangle-puzzle/), a message will pop up showing an encoded version of your solution. The key to the encoding of this puzzle is that the frame can be broken down into 72 triangles:
 
 <img src="https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/blank.jpg" width="32%"/>
 
-Solutions are recorded as 72-character strings. Each character corresponds to 1 triangle in the frame area. The solution is applied to the frame in rows from left to right: the first three characters correspond to the three triangles in the first row, next five characters to the five triangles in the second row, and so on. The character indicates which puzzle piece is covering that triangle in the solution. Each of the 12 pieces is assigned a character according to the key:
+Solutions are recorded as 72-character strings. Each character corresponds to 1 triangle in the frame, and indicates which piece covers that triangle based on the piece IDs shown below. The solution describes the triangles in each row from left to right, top to bottom: the first three characters correspond to the three triangles in the first row, etc.
 
 ![piece key](https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/assets/pieces.png)
 
@@ -45,19 +43,26 @@ Example solution and corresponding encoding:
 </table>
 
 ### Adding a solution with Python
-While it is possible to enter a solution directly into `solutions.csv`, it's critical that solutions be entered with Python, both to avoid typos and invalid entries and to ascertain that the solution has not already been discovered.
+You're welcome to [file an issue reporting a new solution](https://github.com/corinaminer/triangle-puzzle/issues/new?template=report-a-new-solution.md) and I will take care of entering it in the system. However, if you want to do it yourself, you can clone the repo and add your solution using [`puzzle.ipynb`](https://github.com/corinaminer/triangle-puzzle/blob/master/puzzle.ipynb). While it is technically possible to enter a solution directly into `solutions.csv`, it's critical that solutions be entered with Python to ascertain that the solution has not already been discovered.
 
 #### Dependencies
-To use the Python code, you will need [matplotlib](https://matplotlib.org/). The main code is currently in a Jupyter notebook, `puzzle.ipynb`, but the code in it can be copied into a regular Python file and run from there if preferred. It's written in Python 3, but everything will work in Python 2 if you replace `input` in the notebook's `getSolution()` function with `raw_input`.
+You will need a Python 3 environment with `matplotlib` and `jupyter`:
+```
+pip install matplotlib
+pip install jupyter
+```
 
 #### Entering your solution
-You'll need to fill in the parameters in the notebook with your solution's info. See specific instructions for the parameters in the notebook comments. Once you've filled in the parameters and run the notebook, there are a few options for what the output looks like:
-1. An illustration of the solution you've entered, along with a summary of the other parameters you've entered and an input field with the text "Press enter if good". In this case you have the opportunity to add your solution to the spreadsheet. Please carefully review the illustration and parameters, and if everything looks correct, press enter to submit the solution. Otherwise, type anything in the input field, or just stop the program.
+Open the Jupyter notebook (run `jupyter notebook` in the repo's root). Run the first cell, then fill in author name, date, and solution in the second cell and run it. There are a few options for what the output looks like:
+1. An illustration of the solution you've entered, along with a summary of the other parameters you've entered and an input field with the text "Press enter if good". Success! Please review the illustration and parameters. If you need to change something, type anything in the input field (I like "no" or "asdf") and the solution won't be recorded yet. Otherwise, just hit enter and your solution will be added to `solutions.csv`.
 
-2. Same as above, except with text "WARNING: Did not pass basic check" and no input field. This means that the program has recognized your solution can't be valid. Please check your solution input and the illustration and try again.
+1. Same as above, except with text "WARNING: Did not pass basic check" and no input field. This means your solution is invalid. Please check your solution input and the illustration and try again.
 
-3. An empty frame and an error message resulting from an invalid parameter. Hopefully those messages should be pretty clear, but if not, let me know by [filing an issue](https://github.com/corinaminer/triangle-puzzle/issues/new) - it's possible the parameter verification code has a bug.
+1. An empty frame and an error message resulting from an invalid parameter. Hopefully those messages should be pretty clear, but if not, let me know by [filing an issue](https://github.com/corinaminer/triangle-puzzle/issues/new) - it's possible the parameter verification code has a bug.
 
-4. (And I can't fully rule out) a stack trace. If this happens, please [file an issue](https://github.com/corinaminer/triangle-puzzle/issues/new) with your stack trace and parameters so I can fix it. If you want to debug it yourself, great, but please notify me of the bug. Feel free to do so by putting up a pull request with your fix! ;)
+1. (And I can't fully rule out) a stack trace. If this happens, please [file an issue](https://github.com/corinaminer/triangle-puzzle/issues/new) with your stack trace and parameters so I can fix it. If you want to debug it yourself, great, but please notify me of the bug. Feel free to do so by opening a pull request with your fix! ;)
 
-Once you have successfully entered your solution, there are two possible messages you may see. Most likely, your solution will be a new unique solution, and you will get a congratulations message with the ID and sub-ID assigned to it. However, it's also possible that you've found a solution that's already recorded, in which case it will tell you so. **PLEASE LET ME KNOW if you independently find a solution that has already been discovered - I'd like to have that information for statistical purposes!**
+## Computational approaches
+As mentioned above, two people have independently found the total number of solutions to be 5885. David Goodger's code is available [here](https://puzzler.sourceforge.net/puzzler/). (He also has ideas about expanding his project [here](https://puzzler.sourceforge.net/docs/todo.html) if you're interested in getting involved, although that page was last updated in 2015.)
+
+If you feel like writing code to recompute the solution set, I'm happy to hear about a third confirmation of the solution count. I will mention you and your code (if published) in the readme. However, please do not use this repo as your workspace or add computer-generated solutions to `solutions.csv`.

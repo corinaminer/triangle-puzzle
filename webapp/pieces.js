@@ -1,6 +1,6 @@
 import { COLS, H, L, ROWS } from "./consts.js";
 import { grid } from "../puzz.js";
-import { colors, Point } from "./utils.js";
+import { colors, Point, toStyle } from "./utils.js";
 
 const PIECE_OPACITY = 0.7;
 
@@ -189,6 +189,7 @@ class Piece {
             this.path.lineTo(v.x, v.y);
         }
         ctx.fillStyle = toPieceFillStyle(this.color());
+        ctx.strokeStyle = toStyle(colors.pieceBorder);
         ctx.fill(this.path);
         ctx.stroke(this.path);
     }

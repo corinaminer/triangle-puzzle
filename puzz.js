@@ -148,7 +148,7 @@ canvas.addEventListener("mousemove", event => {
     isDrawing = false;
 })
 
-canvas.addEventListener("mouseup", event => {
+canvas.addEventListener("mouseup", async event => {
     event.preventDefault();
     if (!clickedPiece) {
         return;
@@ -173,6 +173,7 @@ canvas.addEventListener("mouseup", event => {
     pickupCoords = undefined;
     isDragging = false;
     redraw();
+    await new Promise(r => setTimeout(r, 4));
     checkSolution(puzzle, puzzleLocs, pieces);
 })
 
@@ -193,7 +194,33 @@ document.getElementById("resetButton").onclick = () => {
     redraw();
 }
 
-document.getElementById("modeButton").onclick = () => {
+const modeButton = document.getElementById("modeButton");
+modeButton.onclick = () => {
+    modeButton.innerHTML = colors.darkMode ? "Dark Mode" : "Light Mode";
     colors.switch();
     redraw();
 }
+
+
+function toggleOverlay() {
+    document.querySelector(".overlay-text").classList.toggle("active");
+    document.querySelector(".overlay").classList.toggle("active");
+}
+for (let overlayToggler of document.getElementsByClassName("overlay-toggler")) {
+    overlayToggler.onclick = toggleOverlay;
+}
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        document.querySelector(".overlay-text").classList.remove("active");
+        document.querySelector(".overlay").classList.remove("active");
+    }
+});
+
+const overlayTextDiv = document.getElementById("overlayText");
+overlayTextDiv.innerHTML = `
+    <b>Welcome!</b>
+    <p>Can you fit the pieces into the hexagonal frame? There are over 5000 unique solutions!</p>
+    <p>Click a piece to rotate it. Right-click to flip. Sorry, mobile users.</p>
+    <p>See <a href="//github.com/corinaminer/triangle-puzzle/">Corina Miner's Github repo</a> to learn more about this puzzle.</p>
+`

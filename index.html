@@ -3,15 +3,23 @@
   <link type="text/css" rel="stylesheet" href="./webapp/puzz.css">
 </head>
 <body>
-  <div class="displayContainer centerFlex">
-    <div class="space-around">
-      <div><button id="solveButton">Solve</button></div>
-      <div><button id="resetButton">Reset</button></div>
-      <div><button id="modeButton">Light mode</button></div>
+  <!-- weird hack to prevent flash of unstyled content on page load -->
+  <script>0</script>
+
+  <div class="top-bar">
+    <div class="button-container">
+      <button class="button" id="resetButton">Reset</button>
+      <button class="button" id="modeButton">Light Mode</button>
     </div>
+    <div class="help-icon overlay-toggler" id="helpIcon">?</div>
   </div>
-  <div class="displayContainer centerFlex">
-      <canvas id="canvas" display="flex" width="1003" height="690"></canvas>
+
+  <div class="overlay overlay-toggler"></div>
+  <div class="overlay-text">
+    <span class="close-btn overlay-toggler">✖</span>
+    <div id="overlayText"></div>
   </div>
+
+  <canvas id="canvas" width="1000" height="688"></canvas>
 </body>
 <script type="module" src="./puzz.js"></script>

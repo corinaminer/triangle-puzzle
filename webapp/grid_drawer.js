@@ -4,7 +4,7 @@ import { colors, Point, toStyle } from "./utils.js";
 const gridlines = [];
 const borderline = [];
 
-export function initForGridAndPuzzle(grid, puzzle) {
+function initForGridAndPuzzle(grid, puzzle) {
     const row_starts = new Set();
     const pos_slope_starts = new Set();
     const neg_slope_starts = new Set();
@@ -66,7 +66,11 @@ export function initForGridAndPuzzle(grid, puzzle) {
     borderline.push(puzzle[0][0].tip);
 }
 
-export function draw_gridlines_and_border(ctx) {
+export function draw_gridlines_and_border(ctx, grid, puzzle) {
+    if (!gridlines.length) {
+        initForGridAndPuzzle(grid, puzzle);
+    }
+
     const gridlineStyle = toStyle(colors.gridlines);
     const borderlineStyle = toStyle(colors.puzzleBorder);
 

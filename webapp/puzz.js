@@ -1,13 +1,13 @@
-import { COLS, H, L, ROWS } from "./webapp/consts.js";
-import { draw_gridlines_and_border } from "./webapp/grid_drawer.js";
-import { initOverlays } from "./webapp/overlay_handler.js";
-import { initPieces } from "./webapp/pieces.js";
-import { checkSolution, populateSolutions } from "./webapp/solution_handler.js";
-import { colors, Point } from "./webapp/utils.js";
+import { COLS, H, L, ROWS } from "./consts.js";
+import { draw_gridlines_and_border } from "./grid_drawer.js";
+import { initOverlays } from "./overlay_handler.js";
+import { initPieces } from "./pieces.js";
+import { checkSolution, populateSolutions } from "./solution_handler.js";
+import { colors, Point } from "./utils.js";
 
 initOverlays(document);
 
-fetch("./solutions.csv")
+fetch("../solutions.csv")
   .then(response => response.text())
   .then(csvText => populateSolutions(csvText.split('\n').map(row => row.split(','))));
 

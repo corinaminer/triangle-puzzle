@@ -31,7 +31,7 @@ class Triangle:
         try:
             self.tile_id = int(tile_id)
         except:
-            self.tile_id = ord('a') - ord(tile_id) + 10
+            self.tile_id = ord(tile_id) - ord('a') + 10
         self.color = COLOR_DICT[TILE_COLORS[self.tile_id]]
         
     def get_coords(self):

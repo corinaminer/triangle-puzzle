@@ -34,3 +34,10 @@ Order of symmetry groups to check for 175:
 12. 17/89
 13. Flip bottom right 93a8(1|0) complex
 14. Swap 9b/2(0|1)
+[Added 2/20/25]:
+15. Rearrange goomba ba1 formation
+16. Flip b4
+17. Flip b6
+18. Flip crab (18)
+19. Flip 38
+20. Swap 02/b3

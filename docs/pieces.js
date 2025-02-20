@@ -4,6 +4,46 @@ import { colors, Point, toStyle } from "./utils.js";
 
 const PIECE_OPACITY = 0.7;
 
+const STARTING_POINTS = [
+    [1, 7],
+    [2, 14],
+    [5, 3],
+    [6, 12],
+    [9, 5],
+    [12, 10],
+    [6, 30],
+    [6, 38],
+    [9, 37],
+    [2, 36],
+    [12, 30],
+    [2, 28],
+];
+
+export function shufflePieces(pieces) {
+    // Shuffle piece order so that which piece goes to which starting spot will be random
+    for (let i = pieces.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pieces[i], pieces[j]] = [pieces[j], pieces[i]];
+    }
+    for (let i = 0; i < pieces.length; i++) {
+        const piece = pieces[i];
+        // Rotate 0-5 times
+        const rotations = Math.floor(Math.random() * 6);
+        for (let n = 0; n < rotations; n++) {
+            piece.rotate(piece.triangles[0]);
+        }
+        // Flip?
+        if (Math.random() < 0.5) {
+            piece.flip(piece.triangles[0]);
+        }
+        // Move to starting spot
+        const destRow = STARTING_POINTS[i][0] + 1;
+        const destCol = STARTING_POINTS[i][1] + 1;
+        const randomT = piece.triangles[Math.floor(Math.random() * 6)];
+        piece.moveByRowColOffset(destRow - randomT.r, destCol - randomT.c);
+    }
+}
+
 function toPieceFillStyle(color) {
     return "rgb(" + color + " / " + PIECE_OPACITY + ")";
 }
@@ -217,11 +257,12 @@ class Piece {
         ctx.fill(this.path);
         ctx.stroke(this.path);
     }
-    move(xOffset, yOffset) {
-        // These must either both be even or both be odd
+    moveByPixelOffset(xOffset, yOffset) {
         let rowChange = Math.round(yOffset / H);
         let colChange = Math.round(xOffset / (L / 2));
-
+        this.moveByRowColOffset(rowChange, colChange);
+    }
+    moveByRowColOffset(rowChange, colChange) {
         // Force both row and column changes to either both be even or both be odd.
         // TODO Could probably be cleaner on where it snaps.
         if ((rowChange + colChange) % 2) {
@@ -290,8 +331,8 @@ class Heart extends Piece {
     constructor() {
         super();
         this.id = "0";
-        const start_row = 1;
-        const start_col = 7;
+        const start_row = STARTING_POINTS[0][0];
+        const start_col = STARTING_POINTS[0][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row][start_col + 2],
@@ -311,8 +352,8 @@ class Hook extends Piece {
     constructor() {
         super();
         this.id = "1";
-        const start_row = 2;
-        const start_col = 14;
+        const start_row = STARTING_POINTS[1][0];
+        const start_col = STARTING_POINTS[1][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -332,8 +373,8 @@ class Mountain extends Piece {
     constructor() {
         super();
         this.id = "2";
-        const start_row = 5;
-        const start_col = 3;
+        const start_row = STARTING_POINTS[2][0];
+        const start_col = STARTING_POINTS[2][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row][start_col + 2],
@@ -353,8 +394,8 @@ class Y extends Piece {
     constructor() {
         super();
         this.id = "3";
-        const start_row = 6;
-        const start_col = 12;
+        const start_row = STARTING_POINTS[3][0];
+        const start_col = STARTING_POINTS[3][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 2],
@@ -374,8 +415,8 @@ class Bow extends Piece {
     constructor() {
         super();
         this.id = "4";
-        const start_row = 9;
-        const start_col = 5;
+        const start_row = STARTING_POINTS[4][0];
+        const start_col = STARTING_POINTS[4][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -395,10 +436,12 @@ class Hexagon extends Piece {
     constructor() {
         super();
         this.id = "5";
+        const start_row = STARTING_POINTS[5][0];
+        const start_col = STARTING_POINTS[5][1];
         this.triangles = [];
         for (let j = 0; j < 2; j++) {
             for (let i = 0; i < 3; i++) {
-                this.triangles.push(grid[12 + j][10 + i]);
+                this.triangles.push(grid[start_row + j][start_col + i]);
             }
         }
     }
@@ -423,8 +466,8 @@ class Chevron extends Piece {
     constructor() {
         super();
         this.id = "6";
-        const start_row = 6;
-        const start_col = 30;
+        const start_row = STARTING_POINTS[6][0];
+        const start_col = STARTING_POINTS[6][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col],
@@ -444,8 +487,8 @@ class Lightning extends Piece {
     constructor() {
         super();
         this.id = "7";
-        const start_row = 6;
-        const start_col = 38;
+        const start_row = STARTING_POINTS[7][0];
+        const start_col = STARTING_POINTS[7][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 3],
@@ -465,8 +508,8 @@ class Check extends Piece {
     constructor() {
         super();
         this.id = "8";
-        const start_row = 9;
-        const start_col = 37;
+        const start_row = STARTING_POINTS[8][0];
+        const start_col = STARTING_POINTS[8][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -486,8 +529,8 @@ class Line extends Piece {
     constructor() {
         super();
         this.id = "9";
-        const start_row = 2;
-        const start_col = 36;
+        const start_row = STARTING_POINTS[9][0];
+        const start_col = STARTING_POINTS[9][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -507,8 +550,8 @@ class A extends Piece {
     constructor() {
         super();
         this.id = "a";
-        const start_row = 12;
-        const start_col = 30;
+        const start_row = STARTING_POINTS[10][0];
+        const start_col = STARTING_POINTS[10][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 2],
@@ -528,8 +571,8 @@ class Triangly extends Piece {
     constructor() {
         super();
         this.id = "b";
-        const start_row = 2;
-        const start_col = 28;
+        const start_row = STARTING_POINTS[11][0];
+        const start_col = STARTING_POINTS[11][1];
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],

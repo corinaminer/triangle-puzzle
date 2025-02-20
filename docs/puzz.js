@@ -1,7 +1,7 @@
 import { COLS, H, L, ROWS } from "./consts.js";
 import { draw_gridlines_and_border } from "./grid_drawer.js";
 import { initOverlays } from "./overlay_handler.js";
-import { initPieces } from "./pieces.js";
+import { initPieces, shufflePieces } from "./pieces.js";
 import { checkSolution, populateSolutions } from "./solution_handler.js";
 import { colors, Point } from "./utils.js";
 
@@ -168,7 +168,7 @@ canvas.addEventListener("mouseup", async event => {
     }
     const cursor = getCanvasCoord(event.layerX, event.layerY);
     if (isDragging) {
-        clickedPiece.move(cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
+        clickedPiece.moveByPixelOffset(cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
     } else {
         clickedPiece.rotate(findClickedT(clickedPiece, cursor.x, cursor.y));
     }
@@ -185,7 +185,7 @@ canvas.addEventListener("mouseout", event => {
     if (!clickedPiece) {
         return;
     }
-    clickedPiece.move(event.pageX - pickupCoords.x, event.pageY - pickupCoords.y);
+    clickedPiece.moveByPixelOffset(event.pageX - pickupCoords.x, event.pageY - pickupCoords.y);
     clickedPiece = undefined;
     pickupCoords = undefined;
     isDragging = false;
@@ -194,6 +194,11 @@ canvas.addEventListener("mouseout", event => {
 
 document.getElementById("resetButton").onclick = () => {
     pieces = initPieces();
+    redraw();
+}
+
+document.getElementById("shuffleButton").onclick = () => {
+    shufflePieces(pieces);
     redraw();
 }
 

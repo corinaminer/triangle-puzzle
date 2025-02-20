@@ -7,7 +7,7 @@ import { colors, Point } from "./utils.js";
 
 initOverlays(document);
 
-fetch("../solutions.csv")
+fetch("https://raw.githubusercontent.com/corinaminer/triangle-puzzle/master/solutions.csv")
   .then(response => response.text())
   .then(csvText => populateSolutions(csvText.split('\n').map(row => row.split(','))));
 

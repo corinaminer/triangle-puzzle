@@ -8,6 +8,32 @@ function toPieceFillStyle(color) {
     return "rgb(" + color + " / " + PIECE_OPACITY + ")";
 }
 
+function shiftTo(coords, clickedTriangle) {
+    // Shifts the provided set of triangle coords to include the coordinate of the clicked triangle, so pieces don't jump out from under u.
+    // coords format: [[r1,c1], [r2,c2],... [r6,c6]]
+    const goalR = clickedTriangle.r;
+    const goalC = clickedTriangle.c;
+    let closest;
+    let closestDistance;
+    for (let coord of coords) {
+        const distance = Math.abs(coord[0] - goalR) + Math.abs(coord[1] - goalC);
+        if (distance == 0) {
+            return; // already on the target triangle
+        } else if (distance % 2) {
+            continue; // this triangle would be the opposite orientation from our target triangle
+        } else if (!closestDistance || distance < closestDistance) {
+            closestDistance = distance;
+            closest = coord;
+        }
+    }
+    const rOffset = goalR - closest[0];
+    const cOffset = goalC - closest[1];
+    coords.forEach(c => {
+        c[0] += rOffset;
+        c[1] += cOffset;
+    })
+}
+
 function moveInBounds(coords) {
     let rOffset = 0;
     let cOffset = 0;
@@ -219,12 +245,12 @@ class Piece {
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
     }
     rotate(clickedTriangle) {
-        clickedTriangle = this.triangles[this.rotationIndex];
+        const rotationT = this.triangles[this.rotationIndex];
         const newCoords = [];
         for (const t of this.triangles) {
-            const rOffset = t.r - clickedTriangle.r;
-            const cOffset = t.c - clickedTriangle.c;
-            if (clickedTriangle.up) {
+            const rOffset = t.r - rotationT.r;
+            const cOffset = t.c - rotationT.c;
+            if (rotationT.up) {
                 const displacement = rotationMapping.get(rOffset).get(cOffset);
                 newCoords.push([t.r + displacement[0], t.c + displacement[1] + 1]);
             } else {
@@ -232,19 +258,17 @@ class Piece {
                 newCoords.push([t.r - displacement[0], t.c - displacement[1] - 1]);
             }
         }
-        if (newCoords.length != 6) {
-            console.error("Missing rotation case. Initial triangle coords and proposed new coords:");
-            console.log(this.triangles.map(t => [t.r, t.c]));
-            console.log(newCoords);
-        }
 
-        // Bring landing spot in bounds if necessary
+        // Shift the piece onto the clicked triangle if it's not on it already
+        shiftTo(newCoords, clickedTriangle);
+
+        // Bring landing spot in bounds if necessary. TODO also try to keep it on the clicked triangle if possible
         moveInBounds(newCoords);
 
         this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
     }
-    flip() {
+    flip(clickedTriangle) {
         const flipT = this.triangles[this.rotationIndex];
         const newCoords = [];
         for (const t of this.triangles) {
@@ -252,7 +276,10 @@ class Piece {
             newCoords.push([t.r, t.c - 2 * cOffset]);
         }
 
-        // Bring landing spot in bounds if necessary
+        // Shift the piece onto the clicked triangle if it's not on it already
+        shiftTo(newCoords, clickedTriangle);
+
+        // Bring landing spot in bounds if necessary. TODO also try to keep it on the clicked triangle if possible
         moveInBounds(newCoords);
         this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
@@ -384,7 +411,7 @@ class Hexagon extends Piece {
     rotate(clickedTriangle) {
         return;
     }
-    flip() {
+    flip(clickedTriangle) {
         return;
     }
     color() {

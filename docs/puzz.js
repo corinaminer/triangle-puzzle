@@ -98,9 +98,21 @@ function redraw() {
 }
 redraw();
 
-function get_canvas_coord(clickX, clickY) {
+function getCanvasCoord(clickX, clickY) {
     const canvasRect = canvas.getBoundingClientRect();
     return new Point(clickX - canvasRect.left - window.scrollX, clickY - canvasRect.top - window.scrollY);
+}
+
+function findClickedT(clickedPiece, cursorX, cursorY) {
+    // Finds which triangle within a clicked piece was clicked
+    for (const t of clickedPiece.triangles) {
+        if (!t.path) {
+            t.addPath();
+        }
+        if (ctx.isPointInPath(t.path, cursorX, cursorY) || ctx.isPointInStroke(t.path, cursorX, cursorY)) {
+            return t;
+        }
+    }
 }
 
 canvas.addEventListener("mousedown", event => {
@@ -109,7 +121,7 @@ canvas.addEventListener("mousedown", event => {
         return;
     }
     event.preventDefault();
-    const click = get_canvas_coord(event.layerX, event.layerY);
+    const click = getCanvasCoord(event.layerX, event.layerY);
     for (let i = pieces.length - 1; i >= 0; i--) {
         const piece = pieces[i];
         if (ctx.isPointInPath(piece.path, click.x, click.y)) {
@@ -124,11 +136,11 @@ canvas.addEventListener("mousedown", event => {
 
 canvas.addEventListener("contextmenu", event => {
     event.preventDefault();
-    const click = get_canvas_coord(event.layerX, event.layerY);
+    const click = getCanvasCoord(event.layerX, event.layerY);
     for (let i = pieces.length - 1; i >= 0; i--) {
         const piece = pieces[i];
         if (ctx.isPointInPath(piece.path, click.x, click.y)) {
-            piece.flip();
+            piece.flip(findClickedT(piece, click.x, click.y));
             redraw();
             checkSolution(puzzle, puzzleLocs, pieces);
             break;
@@ -141,7 +153,7 @@ canvas.addEventListener("mousemove", event => {
     if (!clickedPiece || isDrawing) {
         return;
     }
-    const cursor = get_canvas_coord(event.layerX, event.layerY);
+    const cursor = getCanvasCoord(event.layerX, event.layerY);
     isDragging = true;
     isDrawing = true;
     redraw();
@@ -154,21 +166,11 @@ canvas.addEventListener("mouseup", async event => {
     if (!clickedPiece) {
         return;
     }
-    const cursor = get_canvas_coord(event.layerX, event.layerY);
+    const cursor = getCanvasCoord(event.layerX, event.layerY);
     if (isDragging) {
         clickedPiece.move(cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
     } else {
-        let clickedT;
-        for (const t of clickedPiece.triangles) {
-            if (!t.path) {
-                t.addPath();
-            }
-            if (ctx.isPointInPath(t.path, cursor.x, cursor.y) || ctx.isPointInStroke(t.path, cursor.x, cursor.y)) {
-                clickedT = t;
-                break;
-            }
-        }
-        clickedPiece.rotate(clickedT);
+        clickedPiece.rotate(findClickedT(clickedPiece, cursor.x, cursor.y));
     }
     clickedPiece = undefined;
     pickupCoords = undefined;

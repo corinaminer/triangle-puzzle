@@ -8,47 +8,6 @@ function toPieceFillStyle(color) {
     return "rgb(" + color + " / " + PIECE_OPACITY + ")";
 }
 
-class VertexMapping {
-    constructor(tIndex, cornerId) {
-        this.tIndex = tIndex;
-        this.cornerId = cornerId;
-    }
-    mapToVertex(triangles) {
-        const t = triangles[this.tIndex];
-        if (this.cornerId == 0) {
-            return t.tip;
-        } else if (this.cornerId == 1) {
-            return t.right;
-        }
-        return t.left;
-    }
-    applyRotation(postRotationTriangles) {
-        const t = postRotationTriangles[this.tIndex];
-        if (t.up) {
-            // Previously referred to a down-pointing triangle
-            if (this.cornerId == 2) {
-                this.cornerId = 0;
-            } else if (this.cornerId == 0) {
-                this.cornerId = 2;
-            }
-        } else {
-            // Previously referred to an up-pointing triangle
-            if (this.cornerId == 1) {
-                this.cornerId = 0;
-            } else if (this.cornerId == 0) {
-                this.cornerId = 1;
-            }
-        }
-    }
-    applyFlip() {
-        if (this.cornerId == 1) {
-            this.cornerId = 2;
-        } else if (this.cornerId == 2) {
-            this.cornerId = 1;
-        }
-    }
-}
-
 function moveInBounds(coords) {
     let rOffset = 0;
     let cOffset = 0;
@@ -174,8 +133,47 @@ const rotationMapping = new Map([
 class Piece {
     constructor() {}
     vertices() {
-        return this._vertexMappings.map(vm => vm.mapToVertex(this.triangles));
+        if (this._vertices) {
+            return this._vertices;
+        }
+        const segments = [];
+        for (let triangle of this.triangles) {
+            if (triangle.c == 0 || this.triangles.indexOf(grid[triangle.r][triangle.c - 1]) == -1) {
+                // Triangle's left edge is part of the piece's edge
+                segments.push([triangle.tip, triangle.left]);
+            }
+            if (triangle.c == COLS - 1 || this.triangles.indexOf(grid[triangle.r][triangle.c + 1]) == -1) {
+                // Triangle's right edge is part of the piece's edge
+                segments.push([triangle.tip, triangle.right]);
+            }
+            if (triangle.up && (triangle.r == ROWS - 1 || this.triangles.indexOf(grid[triangle.r + 1][triangle.c]) == -1)) {
+                // Triangle's bottom edge is part of the piece's edge
+                segments.push([triangle.left, triangle.right]);
+            } else if (!triangle.up && (triangle.r == 0 || this.triangles.indexOf(grid[triangle.r - 1][triangle.c]) == -1)) {
+                // Triangle's top edge is part of the piece's edge
+                segments.push([triangle.left, triangle.right]);
+            }
+        }
+        this._vertices = segments.pop();
+        let lastVertex = this._vertices[this._vertices.length - 1];
+        while (!this._vertices[0].equals(lastVertex)) {
+            // Add to vertices by finding the one other segment that connects to its final point
+            let found = false;
+            for (let i = 0; i < segments.length; i++) {
+                const lastVertexIndex = segments[i].findIndex(v => v.equals(lastVertex));
+                if (lastVertexIndex != -1) {
+                    const nextSegment = segments.splice(i, 1)[0];
+                    const nextVertexIndex = lastVertexIndex == 0 ? 1 : 0;
+                    this._vertices.push(nextSegment[nextVertexIndex]);
+                    lastVertex = this._vertices[this._vertices.length - 1];
+                    found = true;
+                    break;
+                }
+            }
+        }
+        return this._vertices;
     }
+
     draw(ctx) {
         this._draw(ctx, this.vertices());
     }
@@ -216,7 +214,8 @@ class Piece {
         // Bring landing spot in bounds if necessary
         moveInBounds(newCoords);
 
-        // Define new triangles based on these offsets
+        // Define new triangles based on these offsets and clear vertices cache
+        this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
     }
     rotate(clickedTriangle) {
@@ -242,8 +241,8 @@ class Piece {
         // Bring landing spot in bounds if necessary
         moveInBounds(newCoords);
 
+        this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
-        this._vertexMappings.forEach(vm => vm.applyRotation(this.triangles));
     }
     flip() {
         const flipT = this.triangles[this.rotationIndex];
@@ -255,8 +254,8 @@ class Piece {
 
         // Bring landing spot in bounds if necessary
         moveInBounds(newCoords);
+        this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
-        this._vertexMappings.forEach(vm => vm.applyFlip());
     }
 }
 
@@ -274,15 +273,6 @@ class Heart extends Piece {
             grid[start_row + 1][start_col + 2],
             grid[start_row + 2][start_col + 1],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(0, 2),
-            new VertexMapping(5, 0),
-            new VertexMapping(1, 1),
-            new VertexMapping(1, 0),
-            new VertexMapping(1, 2),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 3;
     }
     color() {
@@ -304,16 +294,6 @@ class Hook extends Piece {
             grid[start_row + 2][start_col],
             grid[start_row + 2][start_col + 1],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(3, 2),
-            new VertexMapping(3, 0),
-            new VertexMapping(5, 0),
-            new VertexMapping(5, 1),
-            new VertexMapping(5, 2),
-            new VertexMapping(0, 1),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 2;
     }
     color() {
@@ -335,15 +315,6 @@ class Mountain extends Piece {
             grid[start_row + 1][start_col + 2],
             grid[start_row + 1][start_col + 3],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(0, 2),
-            new VertexMapping(2, 0),
-            new VertexMapping(5, 1),
-            new VertexMapping(1, 0),
-            new VertexMapping(1, 2),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 3;
     }
     color() {
@@ -365,16 +336,6 @@ class Y extends Piece {
             grid[start_row + 1][start_col + 1],
             grid[start_row + 2][start_col + 1],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(0, 2),
-            new VertexMapping(1, 2),
-            new VertexMapping(1, 0),
-            new VertexMapping(5, 2),
-            new VertexMapping(5, 0),
-            new VertexMapping(5, 1),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 3;
     }
     color() {
@@ -396,15 +357,6 @@ class Bow extends Piece {
             grid[start_row + 1][start_col + 2],
             grid[start_row + 2][start_col + 1],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(1, 2),
-            new VertexMapping(1, 1),
-            new VertexMapping(5, 0),
-            new VertexMapping(4, 1),
-            new VertexMapping(4, 2),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 3;
     }
     color() {
@@ -454,15 +406,6 @@ class Chevron extends Piece {
             grid[start_row + 2][start_col + 1],
             grid[start_row + 3][start_col],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(0, 2),
-            new VertexMapping(2, 2),
-            new VertexMapping(5, 2),
-            new VertexMapping(5, 0),
-            new VertexMapping(2, 1),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 3;
     }
     color() {
@@ -484,17 +427,6 @@ class Lightning extends Piece {
             grid[start_row + 1][start_col],
             grid[start_row + 2][start_col - 3],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(0, 2),
-            new VertexMapping(1, 0),
-            new VertexMapping(1, 2),
-            new VertexMapping(5, 0),
-            new VertexMapping(5, 1),
-            new VertexMapping(4, 0),
-            new VertexMapping(0, 1),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 3;
     }
     color() {
@@ -516,15 +448,6 @@ class Check extends Piece {
             grid[start_row + 2][start_col - 2],
             grid[start_row + 2][start_col - 1],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(3, 1),
-            new VertexMapping(3, 2),
-            new VertexMapping(3, 0),
-            new VertexMapping(4, 1),
-            new VertexMapping(0, 1),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 5;
     }
     color() {
@@ -546,13 +469,6 @@ class Line extends Piece {
             grid[start_row + 2][start_col - 1],
             grid[start_row + 3][start_col - 2],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(5, 2),
-            new VertexMapping(5, 0),
-            new VertexMapping(0, 1),
-            new VertexMapping(0, 0),
-        ]
         this.rotationIndex = 2;
     }
     color() {
@@ -574,16 +490,6 @@ class A extends Piece {
             grid[start_row + 1][start_col + 1],
             grid[start_row + 1][start_col + 2],
         ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(0, 2),
-            new VertexMapping(1, 2),
-            new VertexMapping(1, 0),
-            new VertexMapping(5, 0),
-            new VertexMapping(5, 1),
-            new VertexMapping(0, 1),
-            new VertexMapping(0, 0),
-        ];
         this.rotationIndex = 3;
     }
     color() {
@@ -604,14 +510,6 @@ class Triangly extends Piece {
             grid[start_row + 1][start_col + 1],
             grid[start_row + 1][start_col + 2],
             grid[start_row + 1][start_col + 3],
-        ];
-        this._vertexMappings = [
-            new VertexMapping(0, 0),
-            new VertexMapping(1, 2),
-            new VertexMapping(5, 1),
-            new VertexMapping(5, 0),
-            new VertexMapping(0, 1),
-            new VertexMapping(0, 0),
         ];
         this.rotationIndex = 3;
     }

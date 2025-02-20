@@ -5,7 +5,7 @@ export class Point {
         Object.freeze(this);
     }
     equals(other) {
-        return this.x == other.x && this.y == other.y;
+        return other instanceof Point && this.x == other.x && this.y == other.y;
     }
 }
 

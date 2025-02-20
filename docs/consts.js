@@ -1,7 +1,7 @@
 // Keep ROWS even to make corners rounded (ups at ends of top row, downs at ends of bottom row)
 // Keep COLS odd to make triangles at beginning and end of each row the same orientation
 export const ROWS = 16;
-export const COLS = 39;
+export const COLS = 43;
 
 // Dimensions of a triangle
 export const L = 50;

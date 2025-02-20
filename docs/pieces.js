@@ -291,7 +291,7 @@ class Heart extends Piece {
         super();
         this.id = "0";
         const start_row = 1;
-        const start_col = 5;
+        const start_col = 7;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row][start_col + 2],
@@ -312,7 +312,7 @@ class Hook extends Piece {
         super();
         this.id = "1";
         const start_row = 2;
-        const start_col = 12;
+        const start_col = 14;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -333,7 +333,7 @@ class Mountain extends Piece {
         super();
         this.id = "2";
         const start_row = 5;
-        const start_col = 1;
+        const start_col = 3;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row][start_col + 2],
@@ -354,7 +354,7 @@ class Y extends Piece {
         super();
         this.id = "3";
         const start_row = 6;
-        const start_col = 10;
+        const start_col = 12;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 2],
@@ -375,7 +375,7 @@ class Bow extends Piece {
         super();
         this.id = "4";
         const start_row = 9;
-        const start_col = 3;
+        const start_col = 5;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -398,7 +398,7 @@ class Hexagon extends Piece {
         this.triangles = [];
         for (let j = 0; j < 2; j++) {
             for (let i = 0; i < 3; i++) {
-                this.triangles.push(grid[12 + j][8 + i]);
+                this.triangles.push(grid[12 + j][10 + i]);
             }
         }
     }
@@ -424,7 +424,7 @@ class Chevron extends Piece {
         super();
         this.id = "6";
         const start_row = 6;
-        const start_col = 28;
+        const start_col = 30;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col],
@@ -445,7 +445,7 @@ class Lightning extends Piece {
         super();
         this.id = "7";
         const start_row = 6;
-        const start_col = 36;
+        const start_col = 38;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 3],
@@ -466,7 +466,7 @@ class Check extends Piece {
         super();
         this.id = "8";
         const start_row = 9;
-        const start_col = 35;
+        const start_col = 37;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -487,7 +487,7 @@ class Line extends Piece {
         super();
         this.id = "9";
         const start_row = 2;
-        const start_col = 34;
+        const start_col = 36;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],
@@ -508,7 +508,7 @@ class A extends Piece {
         super();
         this.id = "a";
         const start_row = 12;
-        const start_col = 28;
+        const start_col = 30;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 2],
@@ -529,7 +529,7 @@ class Triangly extends Piece {
         super();
         this.id = "b";
         const start_row = 2;
-        const start_col = 26;
+        const start_col = 28;
         this.triangles = [
             grid[start_row][start_col],
             grid[start_row + 1][start_col - 1],

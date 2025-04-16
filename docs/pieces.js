@@ -120,40 +120,56 @@ function moveInBounds(coords) {
 /*
 First value: Current relative coord, where (0,0) is the center of rotation.
 Second value: Target relative coord when rotating 30˚ clockwise.
-___________________________________________________________________________________________
-\         /     \ [-2,-3] /     \ [-2,-1] /     \ [-2,1]  /     \ [-2,3]  /     \         /
- \       /       \[-3,3] /[-2,-2]\[-2,4] /[-2,0] \[-1,5] /[-2,2] \ [0,6] /       \       /
-  \     /         \     / [-2,3]  \     / [-1,4]  \     /  [0,5]  \     /         \     /
-----------------------------------------------------------------------------------------
-  /     \ [-1,-4] /     \ [-1,-2] /     \ [-1,0]  /     \ [-1,2]  /     \ [-1,4]  /     \
- /       \[-3,1] /[-1,-3]\[-2,2] /[-1,-1]\[-1,3] /[-1,1] \ [0,4] /[-1,3] \ [1,5] /       \
-/         \     / [-2,1]  \     / [-1,2]  \     /  [0,3]  \     /  [1,4]  \     /         \
--------------------------------------------------------------------------------------------
-\ [0,-5]  /     \ [0,-3]  /     \ [0,-1]  /  *  \  [0,1]  /     \  [0,3]  /     \  [0,5]  /
- \[-3,-1]/[0,-4] \[-2,0] /[0,-2] \[-1,1] / [0,0] \ [0,2] / [0,2] \ [1,3] / [0,4] \ [2,4] /
-  \     / [-2,-1] \     / [-1,0]  \     /* [0,1] *\     /  [1,2]  \     /  [2,3]  \     /
-----------------------------------------------------------------------------------------
-  /     \ [1,-4]  /     \ [1,-2]  /     \  [1,0]  /     \  [1,2]  /     \  [1,4]  /     \
- /       \[-2,-2]/[1,-3] \[-1,-1]/ [1,-1]\ [0,0] / [1,1] \ [1,1] / [1,3] \ [2,2] /       \
-/         \     / [-1,-2] \     /  [0,-1] \     /  [1,0]  \     /  [2,1]  \     /         \
--------------------------------------------------------------------------------------------
-\         /     \ [2,-3]  /     \ [2,-1]  /     \  [2,1]  /     \  [2,3]  /     \         /
- \       /       \[-1,-3]/[2,-2] \[0, -2]/ [2,0] \[1,-1] / [2,2] \ [2,0] /       \       /
-  \     /         \     / [0,-3]  \     / [1,-2]  \     / [2,-1]  \     /         \     /
-----------------------------------------------------------------------------------------
-  /     \         /     \ [3,-2]  /     \  [3,0]  /     \  [3,2]  /     \         /     \
- /       \       /       \[0,-4] /       \[1,-3] /       \[2,-2] /       \       /       \
-/         \     /         \     /         \     /         \     /         \     /         \
--------------------------------------------------------------------------------------------
+_____________________________________________________________________
+\       /   \ -2,-3 /   \ -2,-1 /   \ -2,1  /   \ -2,3  /   \       /
+ \     /     \-3,3 /-2,-2\-2,4 /-2,0 \-1,5 /-2,2 \ 0,6 /     \     /
+  \   /       \   / -2,3  \   / -1,4  \   /  0,5  \   /       \   /
+---}-{---------}-{---------}-{---------}-{---------}-{---------}-{
+  /   \ -1,-4 /   \ -1,-2 /   \ -1,0  /   \ -1,2  /   \ -1,4  /   \
+ /     \-3,1 /-1,-3\-2,2 /-1,-1\-1,3 /-1,1 \ 0,4 /-1,3 \ 1,5 /     \
+/       \   / -2,1  \   / -1,2  \   /  0,3  \   /  1,4  \   /       \
+---------}-{---------}-{---------}-{---------}-{---------}-{---------}
+\ 0,-5  /   \ 0,-3  /   \ 0,-1  / * \  0,1  /   \  0,3  /   \  0,5  /
+ \-3,-1/0,-4 \-2,0 /0,-2 \-1,1 / 0,0 \ 0,2 / 0,2 \ 1,3 / 0,4 \ 2,4 /
+  \   / -2,-1 \   / -1,0  \   /* 0,1 *\   /  1,2  \   /  2,3  \   /
+---}-{---------}-{---------}-{---------}-{---------}-{---------}-{
+  /   \ 1,-4  /   \ 1,-2  /   \  1,0  /   \  1,2  /   \  1,4  /   \
+ /     \-2,-2/1,-3 \-1,-1/ 1,-1\ 0,0 / 1,1 \ 1,1 / 1,3 \ 2,2 /     \
+/       \   / -1,-2 \   /  0,-1 \   /  1,0  \   /  2,1  \   /       \
+---------}-{---------}-{---------}-{---------}-{---------}-{---------}
+\       /   \ 2,-3  /   \ 2,-1  /   \  2,1  /   \  2,3  /   \       /
+ \     /     \-1,-3/2,-2 \0,-2 / 2,0 \1,-1 / 2,2 \ 2,0 /     \     /
+  \   /       \   / 0,-3  \   / 1,-2  \   / 2,-1  \   /       \   /
+---}-{---------}-{---------}-{---------}-{---------}-{---------}-{
+  /   \       /   \ 3,-2  /   \  3,0  /   \  3,2  /   \       /   \
+ /     \     /     \0,-4 /     \1,-3 /     \2,-2 /     \     /     \
+/       \   /       \   /       \   /       \   /       \   /       \
+---------------------------------------------------------------------
 */
-function getRcDisplacement(rOffset, cOffset, centerIsUp) {
-    const rChange = cOffset / 2 - rOffset / 2;
-    let cChange = -cOffset / 2 - 3 * rOffset / 2 + 1; // add 1 to switch triangle's up/down orientation
+/**
+ * Computes displacements to add to a triangle's row and column to find its new position after its piece is rotated.
+ * Note that these values are NOT the second coord pairs shown above, but the difference between the two coord pairs.
+ *
+ * @param rOffset Triangle's row offset from the center-of-rotation triangle (0,0 above)
+ * @param cOffset Triangle's column offset from the center-of-rotation triangle
+ * @param centerIsUp Whether the center-of-rotation triangle points up
+ * @param counterclockwise Whether the piece is being rotated counterclockwise
+ * @returns 2-element list containing row and column displacements to add to the current triangle's coords to get the post-rotation coords
+ */
+function getRcDisplacement(rOffset, cOffset, centerIsUp, counterclockwise) {
+    const rFactorOnR = -0.5 * rOffset;
+    const cFactorOnR = (counterclockwise ? -0.5 : 0.5) * cOffset;
+    const rFactorOnC = (counterclockwise ? 1.5 : -1.5) * rOffset;
+    const cFactorOnC = -0.5 * cOffset;
+    let rChange = rFactorOnR + cFactorOnR;
+    // Offset by 1 to switch triangle's up/down orientation. Switching sign for counterclockwise means a clockwise
+    // rotation followed by a counterclockwise rotation will usually put the piece back in its original position.
+    let cChange = rFactorOnC + cFactorOnC + (counterclockwise ? -1 : 1);
     if ((rOffset + cOffset) % 2) {
-        if (centerIsUp) {
-            return [Math.floor(rChange), Math.ceil(cChange)];
-        }
-        return [Math.ceil(rChange), Math.floor(cChange)];
+        // rChange and cChange are odd multiples of 0.5 and must be rounded. Don't fully understand the reasoning
+        // for when to round up vs down, but trial and error followed by logic simplification brought us here.
+        rChange = centerIsUp ? Math.floor(rChange) : Math.ceil(rChange);
+        cChange = (centerIsUp == counterclockwise) ? Math.floor(cChange) : Math.ceil(cChange);
     }
     return [rChange, cChange];
 }
@@ -247,13 +263,13 @@ class Piece {
         this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
     }
-    rotate(clickedTriangle) {
+    rotate(clickedTriangle, counterclockwise) {
         const rotationT = clickedTriangle;
         const newCoords = [];
         for (const t of this.triangles) {
             const rOffset = t.r - rotationT.r;
             const cOffset = t.c - rotationT.c;
-            const displacement = getRcDisplacement(rOffset, cOffset, rotationT.up);
+            const displacement = getRcDisplacement(rOffset, cOffset, rotationT.up, counterclockwise);
             newCoords.push([t.r + displacement[0], t.c + displacement[1]]);
         }
 
@@ -403,10 +419,10 @@ class Hexagon extends Piece {
         const topRightT = this.triangles[2];
         return [topLeftT.tip, topLeftT.left, bottomT.left, bottomT.right, topRightT.right, topRightT.tip, topLeftT.tip];
     }
-    rotate(clickedTriangle) {
+    rotate() {
         return;
     }
-    flip(clickedTriangle) {
+    flip() {
         return;
     }
     color() {

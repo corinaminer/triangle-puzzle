@@ -170,7 +170,7 @@ canvas.addEventListener("mouseup", async event => {
     if (isDragging) {
         clickedPiece.moveByPixelOffset(cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
     } else {
-        clickedPiece.rotate(findClickedT(clickedPiece, cursor.x, cursor.y));
+        clickedPiece.rotate(findClickedT(clickedPiece, cursor.x, cursor.y), event.shiftKey);
     }
     clickedPiece = undefined;
     pickupCoords = undefined;

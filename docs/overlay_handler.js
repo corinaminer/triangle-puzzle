@@ -9,7 +9,7 @@ function resetOverlayText() {
     overlayTextDiv.innerHTML = `
         <b>Welcome!</b>
         <p>Can you fit the pieces into the hexagonal frame? There are over 5000 unique solutions!</p>
-        <p>Click a piece to rotate it. Right-click to flip. Sorry, mobile users.</p>
+        <p>Click a piece to rotate it. Shift + click for counterclockwise. Right-click to flip. Sorry, mobile users.</p>
         <p>See <a href="//github.com/corinaminer/triangle-puzzle/" target="_blank">Corina Miner's Github repo</a> to learn more about this puzzle.</p>
     `;
 }
@@ -62,11 +62,11 @@ export function showWinOverlay(sol, solData, isMirror) {
     let winText = "<b>Congratulations!</b>";
 
     if (solData) {
-        winText += `<p>You've found ${isMirror ? "the mirror image of " : ""} solution ${solData["id"]}, first discovered by ${solData["author"]} on ${solData["date"] || " an unknown date (2001-2014)"}!</p>`;
+        winText += `<p>You've found ${isMirror ? "the mirror image of " : ""} solution ${solData["id"]}! This solution was first discovered by ${solData["author"]} on ${solData["date"] || " an unknown date (2001-2014)"}.</p>`;
     } else {
         winText += `
             <p>You have discovered a new solution!!!</p>
-            <p>If you'd like this solution added to the recorded collection, please <a href="//github.com/corinaminer/triangle-puzzle/issues/new?template=report-a-new-solution.md" target="_blank">open a Github issue</a> and report the following solution string:</p>
+            <p>If you'd like to add this solution to the recorded collection, please <a href="//github.com/corinaminer/triangle-puzzle/issues/new?template=report-a-new-solution.md" target="_blank">open a Github issue</a> and report the following encoding:</p>
             <pre>${formatSolution(sol)}</pre>
         `;
     }

@@ -30,7 +30,7 @@ export function shufflePieces(pieces) {
         // Rotate 0-5 times
         const rotations = Math.floor(Math.random() * 6);
         for (let n = 0; n < rotations; n++) {
-            piece.rotate(piece.triangles[0]);
+            piece.rotate(piece.triangles[0], false);
         }
         // Flip?
         if (Math.random() < 0.5) {

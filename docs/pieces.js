@@ -298,6 +298,11 @@ class Piece {
         this._vertices = null;
         this.triangles = newCoords.map(rc => grid[rc[0]][rc[1]]);
     }
+    remove() {
+        // "Removes" the piece from the puzzle board (to be placed somewhere new programmatically)
+        this._vertices = null;
+        this.triangles = [];
+    }
 }
 
 class Heart extends Piece {

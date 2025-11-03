@@ -35,6 +35,28 @@ export function populateSolutions(solutionRows) {
     }
 }
 
+export function solve(puzzle, pieces) {
+    // map piece IDs to pieces, clear existing placement
+    const piece_ids = {};
+    for (const p of pieces) {
+        piece_ids[p.id] = p;
+        p.remove();
+    }
+
+    // flatten puzzle into a list of triangles
+    let triangles = [];
+    puzzle.forEach(row => triangles = triangles.concat(row));
+
+    // pick an arbitrary solution to show
+    const s = Object.keys(solutions)[0];
+
+    // assign new triangles to each piece
+    for (let i=0; i<s.length; i++) {
+        const p = piece_ids[s[i]];
+        p.triangles.push(triangles[i]);
+    }
+}
+
 export function checkSolution(puzzle, puzzleLocs, pieces) {
     const solMap = new Map();
     for (const p of pieces) {

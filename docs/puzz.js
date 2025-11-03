@@ -2,7 +2,7 @@ import { COLS, H, L, ROWS } from "./consts.js";
 import { draw_gridlines_and_border } from "./grid_drawer.js";
 import { initOverlays } from "./overlay_handler.js";
 import { initPieces, shufflePieces } from "./pieces.js";
-import { checkSolution, populateSolutions } from "./solution_handler.js";
+import { checkSolution, populateSolutions, solve } from "./solution_handler.js";
 import { colors, Point } from "./utils.js";
 
 initOverlays(document);
@@ -206,5 +206,10 @@ const modeButton = document.getElementById("modeButton");
 modeButton.onclick = () => {
     modeButton.innerHTML = colors.darkMode ? "Dark Mode" : "Light Mode";
     colors.switch();
+    redraw();
+}
+
+document.getElementById("solveButton").onclick = () => {
+    solve(puzzle, pieces);
     redraw();
 }

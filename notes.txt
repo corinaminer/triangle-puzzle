@@ -1,3 +1,12 @@
+Order of symmetry groups to check for 45:
+1. 12
+2. 37b
+3. 459
+4. 0128a (bottom left hexagon)
+5. Shift 7 below 459
+6. 09
+
+
 Order of symmetry groups to check for 48:
 1. 6 & b
 2. 0 & 2
@@ -45,3 +54,5 @@ Order of symmetry groups to check for 175:
 21. Flip cool butt plug shape: 9b13 or 9b57
 22. Rotate 459
 23. Flip bottom right hexagon
+[Added 11/5/25]:
+24. Shift 7 below 459

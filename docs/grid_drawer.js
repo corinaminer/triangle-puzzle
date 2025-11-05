@@ -90,7 +90,6 @@ export function draw_gridlines_and_border(ctx, grid, puzzle) {
     for (const vertex of borderline) {
         ctx.lineTo(vertex.x, vertex.y);
     }
-    ctx.fillStyle = "rgb(0 0 0 / 100%)";
     ctx.stroke();
     ctx.lineWidth = 1;
 }

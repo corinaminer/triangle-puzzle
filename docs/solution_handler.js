@@ -1,5 +1,4 @@
 import { ROW_WIDTHS } from "./consts.js";
-import { showWinOverlay } from "./overlay_handler.js";
 
 let solutions = {};
 let mirrors = {};
@@ -57,12 +56,18 @@ export function solve(puzzle, pieces) {
     }
 }
 
-export function checkSolution(puzzle, puzzleLocs, pieces) {
+/**
+ * If puzzle is not solved, returns [null, null, null]. If puzzle is solved, returns [sol, solData, isMirror]:
+ * - sol: The string representation of the discovered solution
+ * - solData: Historic data for solution if it was already recorded
+ * - isMirror: Boolean indicating if the discovered solution is a mirror of the previously recorded one (if any)
+ */
+export function getSolution(puzzle, puzzleLocs, pieces) {
     const solMap = new Map();
     for (const p of pieces) {
         for (const t of p.triangles) {
             if (!puzzleLocs.has(t) || solMap.has(t)) {
-                return;
+                return [null, null, null];
             }
             solMap.set(t, p.id);
         }
@@ -81,5 +86,5 @@ export function checkSolution(puzzle, puzzleLocs, pieces) {
         isMirror = true;
         solData = solutions[mirrors[sol]];
     }
-    showWinOverlay(sol, solData, isMirror);
+    return [sol, solData, isMirror];
 }

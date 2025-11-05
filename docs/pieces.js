@@ -44,10 +44,6 @@ export function shufflePieces(pieces) {
     }
 }
 
-function toPieceFillStyle(color) {
-    return "rgb(" + color + " / " + PIECE_OPACITY + ")";
-}
-
 function shiftTo(coords, clickedTriangle) {
     // Shifts the provided set of triangle coords to include the coordinate of the clicked triangle, so pieces don't jump out from under u.
     // coords format: [[r1,c1], [r2,c2],... [r6,c6]]
@@ -230,7 +226,7 @@ class Piece {
         for (const v of vertices) {
             this.path.lineTo(v.x, v.y);
         }
-        ctx.fillStyle = toPieceFillStyle(this.color());
+        ctx.fillStyle = toStyle(this.color(), PIECE_OPACITY);
         ctx.strokeStyle = toStyle(colors.pieceBorder);
         ctx.fill(this.path);
         ctx.stroke(this.path);

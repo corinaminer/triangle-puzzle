@@ -9,6 +9,10 @@ export class Point {
     }
 }
 
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Piece colors
 const RED = "255 0 0";
 const GREEN = "0 255 0";
@@ -47,8 +51,38 @@ class Colors {
     }
 }
 
-export function toStyle(color) {
-    return "rgb(" + color + ")";
+export class Style {
+    constructor(color, opacity) {
+        this.color = color;
+        this.opacity = opacity;
+    }
+}
+
+export function toStyle(color, opacity=1) {
+    return `rgb(${color} / ${opacity})`;
+}
+
+export function combineStyles(styles) {
+    if (styles.length === 0) {
+        return null;
+    } else if (styles.length === 1) {
+        return toStyle(styles[0].color, styles[0].opacity);
+    }
+    
+    let newColors = [0, 0, 0];
+    let maxOpacity = 0, opacitySum = 0;
+    for (const s of styles) {
+        maxOpacity = Math.max(maxOpacity, s.opacity);
+        opacitySum += s.opacity;
+        const colors = s.color.split(" ").map(c => parseFloat(c));
+        for (let i=0; i < 3; i++) {
+            newColors[i] += colors[i] * s.opacity;
+        }
+    }
+
+    // Average RGB values weighted by opacity
+    newColors = newColors.map(c => c / opacitySum);
+    return toStyle(newColors.join(" "), maxOpacity);
 }
 
 export const colors = new Colors(true);

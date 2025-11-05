@@ -1,9 +1,10 @@
 import { COLS, H, L, ROWS } from "./consts.js";
+import { fireworks } from "./fireworks.js";
 import { draw_gridlines_and_border } from "./grid_drawer.js";
-import { initOverlays } from "./overlay_handler.js";
+import { initOverlays, showWinOverlay } from "./overlay_handler.js";
 import { initPieces, shufflePieces } from "./pieces.js";
-import { checkSolution, populateSolutions, solve } from "./solution_handler.js";
-import { colors, Point } from "./utils.js";
+import { getSolution, populateSolutions, solve } from "./solution_handler.js";
+import { colors, combineStyles, Point, sleep } from "./utils.js";
 
 initOverlays(document);
 
@@ -28,13 +29,26 @@ class Triangle {
         this.tip = triangle_tip_coords(r, c, up);
         this.left = new Point(this.tip.x - L / 2, this.up ? this.tip.y + H : this.tip.y - H);
         this.right = new Point(this.tip.x + L / 2, this.left.y);
+        this.styles = {};
     }
-    addPath() {
-        this.path = new Path2D();
-        this.path.lineTo(this.tip.x, this.tip.y);
-        this.path.lineTo(this.left.x, this.left.y);
-        this.path.lineTo(this.right.x, this.right.y);
-        this.path.lineTo(this.tip.x, this.tip.y);
+    getPath() {
+        if (!this.path) {
+            this.path = new Path2D();
+            this.path.lineTo(this.tip.x, this.tip.y);
+            this.path.lineTo(this.left.x, this.left.y);
+            this.path.lineTo(this.right.x, this.right.y);
+            this.path.lineTo(this.tip.x, this.tip.y);
+        }
+        return this.path;
+    }
+    addStyle(id, style) {
+        this.styles[id] = style;
+    }
+    removeStyle(id) {
+        delete this.styles[id];
+    }
+    computeStyle() {
+        return combineStyles(Object.values(this.styles));
     }
 }
 
@@ -86,6 +100,24 @@ let isDrawing = false;
 function redraw() {
     ctx.fillStyle = "rgb(" + colors.backgrd + " / 1)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (const row of grid) {
+        for (const t of row) {
+            const style = t.computeStyle();
+            if (style) {
+                ctx.fillStyle = style;
+                ctx.fill(t.getPath());
+            }
+            /*
+            // Different overlap approach: just draw the triangle in each style, overlapping
+            if (t.styles) {
+                for (const s of Object.values(t.styles)) {
+                    ctx.fillStyle = toStyle(s.color, s.opacity);
+                    ctx.fill(t.getPath());
+                }
+            }
+            */
+        }
+    }
     draw_gridlines_and_border(ctx, grid, puzzle);
     // Draw first 11 pieces
     for (let i = 0; i < 11; i++) {
@@ -98,6 +130,21 @@ function redraw() {
 }
 redraw();
 
+async function checkSolution() {
+    const [sol, solData, isMirror] = getSolution(puzzle, puzzleLocs, pieces);
+    if (sol) {
+        allowInputs(false);
+        for (const frameDuration of fireworks(grid, puzzle, puzzleLocs, pieces)) {
+            redraw();
+            await sleep(frameDuration);
+        }
+        grid.forEach(row => row.forEach(t => t.styles = {}));
+        redraw();
+        showWinOverlay(sol, solData, isMirror);
+        allowInputs(true);
+    }
+}
+
 function getCanvasCoord(clickX, clickY) {
     const canvasRect = canvas.getBoundingClientRect();
     return new Point(clickX - canvasRect.left - window.scrollX, clickY - canvasRect.top - window.scrollY);
@@ -106,16 +153,14 @@ function getCanvasCoord(clickX, clickY) {
 function findClickedT(clickedPiece, cursorX, cursorY) {
     // Finds which triangle within a clicked piece was clicked
     for (const t of clickedPiece.triangles) {
-        if (!t.path) {
-            t.addPath();
-        }
-        if (ctx.isPointInPath(t.path, cursorX, cursorY) || ctx.isPointInStroke(t.path, cursorX, cursorY)) {
+        const tPath = t.getPath();
+        if (ctx.isPointInPath(tPath, cursorX, cursorY) || ctx.isPointInStroke(tPath, cursorX, cursorY)) {
             return t;
         }
     }
 }
 
-canvas.addEventListener("mousedown", event => {
+const mousedownFunc = event => {
     if (event.button == 2) {
         // Handled by contextmenu listener
         return;
@@ -132,9 +177,9 @@ canvas.addEventListener("mousedown", event => {
             break;
         } 
     }
-});
+};
 
-canvas.addEventListener("contextmenu", event => {
+const rightClickFunc = event => {
     event.preventDefault();
     const click = getCanvasCoord(event.layerX, event.layerY);
     for (let i = pieces.length - 1; i >= 0; i--) {
@@ -142,13 +187,13 @@ canvas.addEventListener("contextmenu", event => {
         if (ctx.isPointInPath(piece.path, click.x, click.y)) {
             piece.flip(findClickedT(piece, click.x, click.y));
             redraw();
-            checkSolution(puzzle, puzzleLocs, pieces);
+            checkSolution();
             break;
         } 
     }
-})
+};
 
-canvas.addEventListener("mousemove", event => {
+const mouseMoveFunc = event => {
     event.preventDefault();
     if (!clickedPiece || isDrawing) {
         return;
@@ -159,9 +204,9 @@ canvas.addEventListener("mousemove", event => {
     redraw();
     clickedPiece.draw_with_offset(ctx, cursor.x - pickupCoords.x, cursor.y - pickupCoords.y);
     isDrawing = false;
-})
+};
 
-canvas.addEventListener("mouseup", async event => {
+const mouseUpFunc = async event => {
     event.preventDefault();
     if (!clickedPiece) {
         return;
@@ -177,10 +222,10 @@ canvas.addEventListener("mouseup", async event => {
     isDragging = false;
     redraw();
     await new Promise(r => setTimeout(r, 4));
-    checkSolution(puzzle, puzzleLocs, pieces);
-})
+    checkSolution();
+};
 
-canvas.addEventListener("mouseout", event => {
+const mouseOutFunc = event => {
     event.preventDefault();
     if (!clickedPiece) {
         return;
@@ -190,26 +235,53 @@ canvas.addEventListener("mouseout", event => {
     pickupCoords = undefined;
     isDragging = false;
     redraw();
-})
+};
 
-document.getElementById("resetButton").onclick = () => {
+const resetButton = document.getElementById("resetButton");
+const shuffleButton = document.getElementById("shuffleButton");
+const modeButton = document.getElementById("modeButton");
+const solveButton = document.getElementById("solveButton");
+
+const resetFunc = () => {
     pieces = initPieces();
     redraw();
 }
-
-document.getElementById("shuffleButton").onclick = () => {
+const shuffleFunc = () => {
     shufflePieces(pieces);
     redraw();
 }
-
-const modeButton = document.getElementById("modeButton");
-modeButton.onclick = () => {
+const modeFunc = () => {
     modeButton.innerHTML = colors.darkMode ? "Dark Mode" : "Light Mode";
     colors.switch();
     redraw();
 }
-
-document.getElementById("solveButton").onclick = () => {
+const solveFunc = () => {
     solve(puzzle, pieces);
     redraw();
 }
+
+function allowInputs(allow) {
+    if (allow) {
+        canvas.addEventListener("mousedown", mousedownFunc);
+        canvas.addEventListener("contextmenu", rightClickFunc);
+        canvas.addEventListener("mousemove", mouseMoveFunc);
+        canvas.addEventListener("mouseup", mouseUpFunc);
+        canvas.addEventListener("mouseout", mouseOutFunc);
+        resetButton.onclick = resetFunc;
+        shuffleButton.onclick = shuffleFunc;
+        modeButton.onclick = modeFunc;
+        solveButton.onclick = solveFunc;
+    } else {
+        canvas.removeEventListener("mousedown", mousedownFunc);
+        canvas.removeEventListener("contextmenu", rightClickFunc);
+        canvas.removeEventListener("mousemove", mouseMoveFunc);
+        canvas.removeEventListener("mouseup", mouseUpFunc);
+        canvas.removeEventListener("mouseout", mouseOutFunc);
+        resetButton.onclick = null;
+        shuffleButton.onclick = null;
+        modeButton.onclick = null;
+        solveButton.onclick = null;
+    }
+}
+
+allowInputs(true);

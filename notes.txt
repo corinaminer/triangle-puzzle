@@ -17,6 +17,32 @@ Order of symmetry groups to check for 48:
 7. 6 & 9
 8. 1, 3, & b
 9. 0 & 9
+10. Rotate large oblong hexagon at bottom left, 134678a
+11. Flip large oblong hexagon at bottom left, "
+12. Swap 36/17
+
+
+Order of symmetry groups to check for 58:
+1. 13
+2. 02
+3. 28
+4. 2b
+5. Swap 13/45
+6. Goomba (247)
+7. Unholy rearrangement of 258a in bottom right (applied at 58.19)
+8. Unholy rearrangement of 139b in top left (applied at 58.21)
+9. Swap 02/3b
+10. Flip 3b
+
+
+Order of symmetry groups to check for 93:
+1. Swap 02/9b
+2. Flip 2b
+3. Flip 9b
+4. Freaky bottom right rearrangement of 1348a (see 93.1 vs 93.5; or 93.4 to 93.5 for those pieces)
+5. Flip 13
+6. Rotate 135
+7. Flip crab (18)
 
 
 Order of symmetry groups to check for 155:
@@ -26,6 +52,7 @@ Order of symmetry groups to check for 155:
 4. Rotate snonboquous chunk at bottom (18a in first sister)
 5. Swap 46/13
 6. Flip 38
+7. Flip biolloid bottom section: 573a1 (4 is in the middle but doesn't actually move)
 
 
 Order of symmetry groups to check for 175:
